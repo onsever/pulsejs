@@ -3,7 +3,11 @@
   "displayName": "Pulse.js IntelliSense",
   "description": "Completions, hover, diagnostics, and syntax highlighting for Pulse.js HTML attributes",
   "version": "0.1.0",
-  "publisher": "pulse-js",
+  "publisher": "onsever",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/onsever/pulsejs"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
