@@ -15,17 +15,17 @@ One attribute encodes the HTTP method, URL, target, swap behavior, and modifiers
 ### CDN
 
 ```html
-<script src="https://unpkg.com/pulse-js@1.0.0/dist/pulse.min.js"></script>
+<script src="https://unpkg.com/@onsever/pulse-js@1.0.0/dist/pulse.min.js"></script>
 ```
 
 ### npm
 
 ```bash
-npm install pulse-js
+npm install @onsever/pulse-js
 ```
 
 ```js
-import 'pulse-js';
+import '@onsever/pulse-js';
 ```
 
 Pulse auto-initializes on `DOMContentLoaded`. No setup code needed.
