@@ -1,0 +1,62 @@
+{
+  "Pulse: GET Request": {
+    "prefix": "p-get",
+    "body": "<${1:div} p-request=\"GET ${2:/api/endpoint} > ${3:#target}\" p-trigger=\"${4:click}\">\n\t$0\n</${1:div}>",
+    "description": "Element with a Pulse GET request"
+  },
+  "Pulse: POST Form": {
+    "prefix": "p-form",
+    "body": "<form p-request=\"POST ${1:/api/endpoint} {this} > ${2:#result}\">\n\t<input type=\"text\" name=\"${3:field}\" placeholder=\"${4:Enter value}\" />\n\t<button type=\"submit\">$5Submit</button>\n</form>",
+    "description": "Form with Pulse POST request"
+  },
+  "Pulse: DELETE with Confirm": {
+    "prefix": "p-delete",
+    "body": "<button p-request=\"DELETE ${1:/api/item/}${2:id} > closest ${3:tr}.outer :confirm('${4:Are you sure?}')\">\n\tDelete\n</button>",
+    "description": "Delete button with confirmation dialog"
+  },
+  "Pulse: Search Input": {
+    "prefix": "p-search",
+    "body": "<input type=\"search\"\n\tname=\"${1:q}\"\n\tp-request=\"GET ${2:/api/search} {this} > ${3:#results}\"\n\tp-trigger=\"input changed debounce ${4:300}ms\"\n\tplaceholder=\"${5:Search...}\" />",
+    "description": "Search input with debounced request"
+  },
+  "Pulse: Infinite Scroll": {
+    "prefix": "p-infinite-scroll",
+    "body": "<div id=\"${1:item-list}\">\n\t<!-- items rendered here -->\n</div>\n<div p-request=\"GET ${2:/api/items?page=}${3:2} > #${1:item-list}.append\"\n\tp-trigger=\"revealed\"\n\tp-history=\"false\">\n\tLoading more...\n</div>",
+    "description": "Infinite scroll pattern with revealed trigger"
+  },
+  "Pulse: Polling": {
+    "prefix": "p-poll",
+    "body": "<div p-request=\"GET ${1:/api/status} > ${2:this}\"\n\tp-trigger=\"every ${3:2}s\">\n\t$0\n</div>",
+    "description": "Element that polls a URL at regular intervals"
+  },
+  "Pulse: Modal Trigger": {
+    "prefix": "p-modal",
+    "body": "<button p-request=\"GET ${1:/api/modal} > ${2:#modal-container}\">\n\t${3:Open Modal}\n</button>\n<div id=\"${4:modal-container}\"></div>",
+    "description": "Button that loads modal content"
+  },
+  "Pulse: Inline Edit": {
+    "prefix": "p-inline-edit",
+    "body": "<div p-request=\"GET ${1:/api/edit/}${2:id} > this.outer\"\n\tp-trigger=\"click\">\n\t${3:Click to edit}\n</div>",
+    "description": "Click-to-edit inline element"
+  },
+  "Pulse: Tabs": {
+    "prefix": "p-tabs",
+    "body": "<div role=\"tablist\">\n\t<button p-request=\"GET ${1:/api/tab/}1 > #${2:tab-content}\" class=\"active\">${3:Tab 1}</button>\n\t<button p-request=\"GET ${1:/api/tab/}2 > #${2:tab-content}\">${4:Tab 2}</button>\n\t<button p-request=\"GET ${1:/api/tab/}3 > #${2:tab-content}\">${5:Tab 3}</button>\n</div>\n<div id=\"${2:tab-content}\">\n\t$0\n</div>",
+    "description": "Tab navigation pattern"
+  },
+  "Pulse: Load More Button": {
+    "prefix": "p-load-more",
+    "body": "<button p-request=\"GET ${1:/api/items?page=}${2:next} > ${3:#item-list}.append\"\n\tp-trigger=\"click\">\n\tLoad More\n</button>",
+    "description": "Load more button that appends content"
+  },
+  "Pulse: Boosted Navigation": {
+    "prefix": "p-nav",
+    "body": "<nav p-boost=\"true\">\n\t<a href=\"${1:/page1}\">${2:Page 1}</a>\n\t<a href=\"${3:/page2}\">${4:Page 2}</a>\n\t<a href=\"${5:/page3}\">${6:Page 3}</a>\n</nav>\n<main id=\"${7:content}\">\n\t$0\n</main>",
+    "description": "Boosted navigation with SPA-like behavior"
+  },
+  "Pulse: Template Page": {
+    "prefix": "p-page",
+    "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n\t<meta charset=\"UTF-8\" />\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n\t<title>${1:Pulse App}</title>\n\t<script src=\"${2:pulse.min.js}\"></script>\n</head>\n<body>\n\t<nav p-boost=\"true\">\n\t\t<a href=\"/\">${3:Home}</a>\n\t</nav>\n\t<main id=\"content\">\n\t\t$0\n\t</main>\n</body>\n</html>",
+    "description": "Full HTML page with Pulse.js setup"
+  }
+}

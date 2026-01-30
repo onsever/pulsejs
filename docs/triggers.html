@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>p-trigger Deep Dive — Pulse.js</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+  <aside class="sidebar"><div class="sidebar-brand"><h2>Pulse.js</h2><span class="version">v1.0.0</span></div><nav></nav></aside>
+
+  <main class="content">
+    <h1>p-trigger Deep Dive</h1>
+    <p>The <code>p-trigger</code> attribute controls <em>when</em> a request fires. It has smart defaults so you often don't need it at all.</p>
+
+    <h2 id="defaults">Default Triggers</h2>
+    <p>If you omit <code>p-trigger</code>, Pulse uses these defaults based on element type:</p>
+    <table>
+      <thead><tr><th>Element</th><th>Default Trigger</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;button&gt;</code>, <code>&lt;a&gt;</code></td><td><code>click</code></td></tr>
+        <tr><td><code>&lt;form&gt;</code></td><td><code>submit</code></td></tr>
+        <tr><td><code>&lt;input&gt;</code>, <code>&lt;textarea&gt;</code></td><td><code>input</code></td></tr>
+        <tr><td><code>&lt;select&gt;</code></td><td><code>change</code></td></tr>
+        <tr><td>Everything else</td><td><code>click</code></td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="syntax">Syntax</h2>
+<pre><code>p-trigger="event modifiers"
+p-trigger="event1 modifiers, event2 modifiers"</code></pre>
+
+    <h2 id="standard">Standard Events</h2>
+    <p>Any DOM event name works:</p>
+<pre><code>&lt;div p-request="GET /data" p-trigger="mouseenter"&gt;Hover me&lt;/div&gt;
+&lt;input p-request="GET /validate" p-trigger="blur"&gt;
+&lt;div p-request="GET /data" p-trigger="click"&gt;Click me&lt;/div&gt;</code></pre>
+
+    <h2 id="modifiers">Trigger Modifiers</h2>
+
+    <h3><code>once</code></h3>
+    <p>Fire only the first time the event occurs.</p>
+<pre><code>&lt;button p-request="GET /data" p-trigger="click once"&gt;Load Once&lt;/button&gt;</code></pre>
+
+    <h3><code>changed</code></h3>
+    <p>Only fire if the element's value has changed since the last trigger.</p>
+<pre><code>&lt;input p-request="GET /search" p-trigger="input changed"&gt;</code></pre>
+
+    <h3><code>consume</code></h3>
+    <p>Calls <code>stopPropagation()</code> on the event.</p>
+<pre><code>&lt;button p-request="POST /action" p-trigger="click consume"&gt;Act&lt;/button&gt;</code></pre>
+
+    <h3><code>debounce</code></h3>
+    <p>Wait for a pause in events before firing. Resets the timer on each new event.</p>
+<pre><code>&lt;input p-request="GET /search" p-trigger="input debounce 300ms"&gt;</code></pre>
+
+    <h3><code>throttle</code></h3>
+    <p>Fire at most once per interval.</p>
+<pre><code>&lt;div p-request="POST /track" p-trigger="mousemove throttle 500ms"&gt;Track&lt;/div&gt;</code></pre>
+
+    <h3><code>delay</code></h3>
+    <p>Wait a fixed time after the event before firing.</p>
+<pre><code>&lt;button p-request="GET /data" p-trigger="click delay 1s"&gt;Delayed Load&lt;/button&gt;</code></pre>
+
+    <h2 id="filters">Event Filters</h2>
+    <p>Filter events with a JavaScript expression in square brackets. The expression has access to the event object.</p>
+<pre><code>&lt;!-- Only fire on Enter key --&gt;
+&lt;input p-request="GET /search" p-trigger="keydown[key === 'Enter']"&gt;
+
+&lt;!-- Only fire with Ctrl held --&gt;
+&lt;button p-request="POST /save" p-trigger="click[ctrlKey]"&gt;Ctrl+Click&lt;/button&gt;
+
+&lt;!-- Combine filter with modifier --&gt;
+&lt;input p-request="GET /search" p-trigger="keydown[key === 'Enter'] debounce 200ms"&gt;</code></pre>
+
+    <h2 id="from">The <code>from</code> Modifier</h2>
+    <p>Listen for events on a different element.</p>
+<pre><code>&lt;!-- Listen for clicks on the document body --&gt;
+&lt;div p-request="GET /data" p-trigger="click from body"&gt;...&lt;/div&gt;
+
+&lt;!-- Listen for a custom event from another element --&gt;
+&lt;div p-request="GET /data" p-trigger="refresh from #controls"&gt;...&lt;/div&gt;
+
+&lt;!-- Keyboard shortcut from body --&gt;
+&lt;div p-request="POST /save" p-trigger="keydown[key === 's' &amp;&amp; ctrlKey] from body"&gt;...&lt;/div&gt;</code></pre>
+
+    <h2 id="special">Special Triggers</h2>
+
+    <h3><code>load</code></h3>
+    <p>Fires immediately when the element is processed by Pulse (via <code>queueMicrotask</code>).</p>
+<pre><code>&lt;div p-request="GET /initial-data" p-trigger="load"&gt;Loading...&lt;/div&gt;</code></pre>
+
+    <h3><code>revealed</code> / <code>intersect</code></h3>
+    <p>Fires when the element enters the viewport (IntersectionObserver).</p>
+<pre><code>&lt;div p-request="GET /lazy-content" p-trigger="revealed"&gt;...&lt;/div&gt;
+&lt;img p-request="GET /image/1" p-trigger="intersect once"&gt;</code></pre>
+
+    <h3><code>every Xs</code> (Polling)</h3>
+    <p>Repeatedly fires at a fixed interval.</p>
+<pre><code>&lt;div p-request="GET /notifications" p-trigger="every 5s"&gt;
+  No new notifications
+&lt;/div&gt;
+
+&lt;!-- Shorter interval --&gt;
+&lt;div p-request="GET /live-score" p-trigger="every 1s"&gt;--&lt;/div&gt;</code></pre>
+    <div class="note">Polling automatically stops when the element is removed from the DOM.</div>
+
+    <h2 id="multiple">Multiple Triggers</h2>
+    <p>Separate multiple triggers with commas. Each can have its own modifiers.</p>
+<pre><code>&lt;input p-request="GET /search"
+       p-trigger="input debounce 300ms, keydown[key === 'Enter']"&gt;</code></pre>
+
+    <div class="page-nav">
+      <a class="prev" href="request-syntax.html">&larr; p-request Syntax</a>
+      <a class="next" href="modifiers.html">Modifier Reference &rarr;</a>
+    </div>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

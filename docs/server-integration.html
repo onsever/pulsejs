@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Server Integration — Pulse.js</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+  <aside class="sidebar"><div class="sidebar-brand"><h2>Pulse.js</h2><span class="version">v1.0.0</span></div><nav></nav></aside>
+
+  <main class="content">
+    <h1>Server Integration</h1>
+    <p>Pulse communicates with your server via standard HTTP. Your server returns HTML fragments, and Pulse handles the DOM updates.</p>
+
+    <h2 id="request-headers">Request Headers</h2>
+    <p>Pulse automatically sends these headers with every request:</p>
+    <table>
+      <thead><tr><th>Header</th><th>Value</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>P-Request</code></td><td><code>true</code></td><td>Identifies this as a Pulse request</td></tr>
+        <tr><td><code>P-Current-URL</code></td><td>Current page URL</td><td>The page the request originates from</td></tr>
+        <tr><td><code>P-Target</code></td><td>Target element ID</td><td>The element that will receive the response</td></tr>
+        <tr><td><code>P-Trigger</code></td><td>Triggering element ID</td><td>The element that initiated the request</td></tr>
+        <tr><td><code>P-Trigger-Name</code></td><td>Triggering element name</td><td>The <code>name</code> attribute of the trigger</td></tr>
+        <tr><td><code>P-Boosted</code></td><td><code>true</code></td><td>Present if request came from a boosted link/form</td></tr>
+        <tr><td><code>P-Prompt</code></td><td>User input</td><td>Value from <code>:prompt()</code> modifier</td></tr>
+        <tr><td><code>P-History-Restore-Request</code></td><td><code>true</code></td><td>Present if restoring from history cache miss</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="response-headers">Response Headers</h2>
+    <p>Your server can send these headers to control Pulse behavior:</p>
+    <table>
+      <thead><tr><th>Header</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>P-Redirect</code></td><td>Redirect the browser to the specified URL (stops processing)</td></tr>
+        <tr><td><code>P-Refresh</code></td><td>Reload the current page (stops processing)</td></tr>
+        <tr><td><code>P-Retarget</code></td><td>Override the swap target with a new CSS selector</td></tr>
+        <tr><td><code>P-Reswap</code></td><td>Override the swap behavior (e.g., <code>append</code>)</td></tr>
+        <tr><td><code>P-Reselect</code></td><td>Override the <code>:select</code> modifier</td></tr>
+        <tr><td><code>P-Push</code></td><td>Push a URL to browser history</td></tr>
+        <tr><td><code>P-Replace</code></td><td>Replace the current URL in browser history</td></tr>
+        <tr><td><code>P-Trigger</code></td><td>Dispatch custom events immediately</td></tr>
+        <tr><td><code>P-Trigger-After-Swap</code></td><td>Dispatch custom events after DOM swap</td></tr>
+        <tr><td><code>P-Trigger-After-Settle</code></td><td>Dispatch custom events after settle</td></tr>
+      </tbody>
+    </table>
+
+    <h3>P-Trigger Header Format</h3>
+    <p>The trigger headers accept event names, optionally with detail data:</p>
+<pre><code>P-Trigger: myEvent
+P-Trigger: itemAdded, notificationUpdate
+P-Trigger: {"itemAdded": {"id": 5}, "showMessage": {"text": "Saved!"}}</code></pre>
+
+    <h2 id="oob">Out-of-Band Swaps</h2>
+    <p>OOB swaps let you update multiple parts of the page from a single response. Elements in the response with <code>p-oob</code> are extracted and swapped into their matching targets.</p>
+<pre><code>&lt;!-- Client: enable OOB processing --&gt;
+&lt;button p-request="POST /add-item {this} > #list.append :oob"&gt;Add&lt;/button&gt;
+
+&lt;!-- Server response: main content + OOB updates --&gt;
+&lt;li&gt;New Item&lt;/li&gt;
+
+&lt;span id="item-count" p-oob="true"&gt;5 items&lt;/span&gt;
+&lt;div id="notification" p-oob="append"&gt;
+  &lt;p&gt;Item added successfully&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+    <p>OOB elements are matched by their <code>id</code>. The <code>p-oob</code> value sets the swap behavior (<code>true</code> defaults to <code>replace</code>).</p>
+
+    <h2 id="express">Express.js Example</h2>
+<pre><code>const express = require('express');
+const app = express();
+
+// Detect Pulse requests
+app.use((req, res, next) => {
+  req.isPulse = req.headers['p-request'] === 'true';
+  next();
+});
+
+// Return HTML fragment for Pulse, full page otherwise
+app.get('/items', (req, res) => {
+  const items = getItems();
+  if (req.isPulse) {
+    res.send(items.map(i =>
+      `&lt;li&gt;${i.name}&lt;/li&gt;`
+    ).join(''));
+  } else {
+    res.render('items', { items });
+  }
+});
+
+// POST with OOB response
+app.post('/items', (req, res) => {
+  const item = createItem(req.body);
+  const count = getItemCount();
+
+  res.send(`
+    &lt;li&gt;${item.name}&lt;/li&gt;
+    &lt;span id="count" p-oob="true"&gt;${count} items&lt;/span&gt;
+  `);
+});
+
+// Server-side redirect
+app.post('/login', (req, res) => {
+  if (authenticate(req.body)) {
+    res.set('P-Redirect', '/dashboard');
+    res.send('');
+  } else {
+    res.status(401).send('&lt;p class="error"&gt;Invalid credentials&lt;/p&gt;');
+  }
+});
+
+// Trigger client events
+app.delete('/items/:id', (req, res) => {
+  deleteItem(req.params.id);
+  res.set('P-Trigger', JSON.stringify({
+    showToast: { message: 'Item deleted', type: 'success' }
+  }));
+  res.send('');
+});</code></pre>
+
+    <h2 id="flask">Flask Example</h2>
+<pre><code>from flask import Flask, request, make_response, render_template
+import json
+
+app = Flask(__name__)
+
+@app.route('/items', methods=['GET'])
+def get_items():
+    items = Item.query.all()
+    if request.headers.get('P-Request') == 'true':
+        return ''.join(f'&lt;li&gt;{i.name}&lt;/li&gt;' for i in items)
+    return render_template('items.html', items=items)
+
+@app.route('/items', methods=['POST'])
+def create_item():
+    item = Item.create(request.form)
+    resp = make_response(f'&lt;li&gt;{item.name}&lt;/li&gt;')
+    resp.headers['P-Trigger-After-Swap'] = json.dumps({
+        'showToast': {'message': 'Item created'}
+    })
+    return resp</code></pre>
+
+    <h2 id="rails">Rails Example</h2>
+<pre><code>class ItemsController &lt; ApplicationController
+  def index
+    @items = Item.all
+    if request.headers["P-Request"] == "true"
+      render partial: "items/list", locals: { items: @items }
+    else
+      render :index
+    end
+  end
+
+  def destroy
+    @item = Item.find(params[:id])
+    @item.destroy
+    response.headers["P-Trigger"] = { itemDeleted: { id: @item.id } }.to_json
+    head :ok
+  end
+end</code></pre>
+
+    <h2 id="content-type">Content Type</h2>
+    <p>Pulse expects HTML fragment responses. Your server should return <code>text/html</code> content. Full HTML documents (with <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, etc.) are parsed but only the body content is used.</p>
+    <div class="tip">For empty responses (like DELETE), return a 200 status with an empty body. Pulse handles empty responses correctly for <code>remove</code> and <code>none</code> behaviors.</div>
+
+    <div class="page-nav">
+      <a class="prev" href="modifiers.html">&larr; Modifier Reference</a>
+      <a class="next" href="configuration.html">Configuration &rarr;</a>
+    </div>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

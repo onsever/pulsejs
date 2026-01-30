@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Topics — Pulse.js</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+  <aside class="sidebar"><div class="sidebar-brand"><h2>Pulse.js</h2><span class="version">v1.0.0</span></div><nav></nav></aside>
+
+  <main class="content">
+    <h1>Advanced Topics</h1>
+
+    <h2 id="inheritance">Inheritance</h2>
+    <p>Headers defined on parent elements automatically propagate to all children with <code>p-request</code>.</p>
+<pre><code>&lt;!-- All children inherit the CSRF header --&gt;
+&lt;div p-request="{'X-CSRF-Token': 'abc123'}"&gt;
+  &lt;button p-request="POST /items"&gt;Create&lt;/button&gt;
+  &lt;button p-request="DELETE /items/1"&gt;Delete&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+    <h3>Stopping Inheritance</h3>
+    <p>Use <code>p-inherit="false"</code> to create a boundary:</p>
+<pre><code>&lt;div p-request="{'X-CSRF-Token': 'abc123'}"&gt;
+  &lt;button p-request="POST /items"&gt;Inherits CSRF&lt;/button&gt;
+
+  &lt;div p-inherit="false"&gt;
+    &lt;button p-request="GET /public"&gt;No inherited headers&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+    <h3>Selective Inheritance</h3>
+    <p>Allow only specific attributes to be inherited:</p>
+<pre><code>&lt;div p-inherit="p-boost"&gt;
+  &lt;!-- Only p-boost is inherited, not headers --&gt;
+&lt;/div&gt;</code></pre>
+
+    <h3>Boost Inheritance</h3>
+    <p><code>p-boost</code> inherits down the tree. Children can opt out:</p>
+<pre><code>&lt;nav p-boost="true"&gt;
+  &lt;a href="/home"&gt;Home (boosted)&lt;/a&gt;
+  &lt;a href="/about"&gt;About (boosted)&lt;/a&gt;
+  &lt;a href="/external" p-boost="false"&gt;External (not boosted)&lt;/a&gt;
+&lt;/nav&gt;</code></pre>
+
+    <h2 id="boost">Boost</h2>
+    <p><code>p-boost</code> turns standard links and forms into Pulse requests without adding <code>p-request</code> to each one.</p>
+
+    <h3>Links</h3>
+    <p>Boosted links send a GET request to the link's <code>href</code> and swap the response into <code>body</code>.</p>
+<pre><code>&lt;nav p-boost="true"&gt;
+  &lt;a href="/home"&gt;Home&lt;/a&gt;
+  &lt;a href="/about"&gt;About&lt;/a&gt;
+&lt;/nav&gt;</code></pre>
+
+    <h3>Forms</h3>
+    <p>Boosted forms use the form's <code>method</code> and <code>action</code>, collecting form data automatically.</p>
+<pre><code>&lt;form action="/search" method="GET" p-boost="true"&gt;
+  &lt;input name="q" placeholder="Search..."&gt;
+  &lt;button type="submit"&gt;Go&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+
+    <h3>Interaction with p-request</h3>
+    <p>If an element has both <code>p-boost</code> and <code>p-request</code>, <code>p-request</code> takes priority.</p>
+
+    <h2 id="history">History Management</h2>
+    <p>Pulse can update the browser URL and handle back/forward navigation.</p>
+
+    <h3>Push and Replace</h3>
+<pre><code>&lt;!-- Push new URL --&gt;
+&lt;a p-request="GET /page/2 > #content" p-history="push"&gt;Page 2&lt;/a&gt;
+
+&lt;!-- Replace current URL --&gt;
+&lt;button p-request="GET /tab/settings > #tabs" p-history="replace"&gt;Settings&lt;/button&gt;
+
+&lt;!-- Disable history for this element --&gt;
+&lt;button p-request="GET /data" p-history="false"&gt;Load&lt;/button&gt;</code></pre>
+
+    <h3>History Cache</h3>
+    <p>Pulse caches page content for back/forward navigation. Configure the cache size:</p>
+<pre><code>Pulse.init({
+  historyCacheSize: 20,       // Cache up to 20 pages
+  refreshOnHistoryMiss: true  // Full reload on cache miss
+});</code></pre>
+
+    <h3>Server-Side History</h3>
+    <p>The server can control history via response headers:</p>
+<pre><code>P-Push: /new-url          // Push URL
+P-Replace: /updated-url   // Replace URL</code></pre>
+
+    <h2 id="css-classes">CSS Classes</h2>
+    <p>Pulse adds and removes CSS classes during the request lifecycle. Use these for animations and loading states.</p>
+
+    <table>
+      <thead><tr><th>Class</th><th>Applied To</th><th>When</th></tr></thead>
+      <tbody>
+        <tr><td><code>pulse-request</code></td><td>Triggering element + indicator</td><td>During the request</td></tr>
+        <tr><td><code>pulse-swapping</code></td><td>Target element</td><td>During DOM swap</td></tr>
+        <tr><td><code>pulse-settling</code></td><td>Target element</td><td>After swap, during settle period</td></tr>
+        <tr><td><code>pulse-added</code></td><td>Newly inserted elements</td><td>After insert, during settle period</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Animation Examples</h3>
+<pre><code>/* Fade in new content */
+.pulse-added {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* After settle, elements have no special class - full opacity */
+
+/* Loading state */
+.pulse-request {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Swap animation */
+.pulse-swapping {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+/* Show spinner during request */
+.pulse-indicator { display: none; }
+.pulse-request .pulse-indicator { display: inline-block; }</code></pre>
+
+    <h2 id="view-transitions">View Transitions</h2>
+    <p>Pulse integrates with the View Transitions API for smooth page transitions.</p>
+
+    <h3>Per-Request</h3>
+<pre><code>&lt;a p-request="GET /page/2 > #content :transition" p-history="push"&gt;Next&lt;/a&gt;</code></pre>
+
+    <h3>Global</h3>
+<pre><code>Pulse.init({
+  globalViewTransitions: true
+});</code></pre>
+    <div class="note">View Transitions require browser support. Pulse falls back to instant swaps in unsupported browsers.</div>
+
+    <h2 id="sync-modes">Sync Modes</h2>
+    <p>The <code>:sync</code> modifier controls how concurrent requests from the same element are handled.</p>
+
+    <h3>Replace (Default)</h3>
+    <p>Aborts the in-flight request and starts a new one. Best for search inputs where only the latest query matters.</p>
+<pre><code>&lt;input p-request="GET /search" p-trigger="input debounce 300ms" :sync(replace)&gt;</code></pre>
+
+    <h3>Drop</h3>
+    <p>Ignores new requests while one is in-flight. Best for submit buttons to prevent double-submission.</p>
+<pre><code>&lt;button p-request="POST /order {#form}" :sync(drop)&gt;Place Order&lt;/button&gt;</code></pre>
+
+    <h3>Queue</h3>
+    <p>Queues new requests and processes them after the current one completes.</p>
+<pre><code>&lt;button p-request="POST /step" :sync(queue)&gt;Next Step&lt;/button&gt;</code></pre>
+
+    <h2 id="security">Security</h2>
+    <h3>Same-Origin Requests</h3>
+    <p>By default, <code>selfRequestsOnly: true</code> restricts requests to the same origin. This prevents malicious HTML from sending requests to arbitrary URLs.</p>
+
+    <h3>Script Execution</h3>
+    <p>Control script tag execution in swapped content:</p>
+<pre><code>Pulse.init({
+  allowScriptTags: false  // Don't execute scripts in swapped HTML
+});</code></pre>
+
+    <h3>Eval</h3>
+    <p>Disable eval for strict CSP environments:</p>
+<pre><code>Pulse.init({
+  allowEval: false  // Disables [filter] expressions and p-on handlers
+});</code></pre>
+    <div class="warn">Disabling <code>allowEval</code> means trigger filters (<code>[ctrlKey]</code>) and <code>p-on</code> handlers won't work.</div>
+
+    <div class="page-nav">
+      <a class="prev" href="events.html">&larr; Events &amp; Lifecycle</a>
+      <a class="next" href="api-reference.html">API Reference &rarr;</a>
+    </div>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

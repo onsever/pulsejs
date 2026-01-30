@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Examples — Pulse.js</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+  <aside class="sidebar"><div class="sidebar-brand"><h2>Pulse.js</h2><span class="version">v1.0.0</span></div><nav></nav></aside>
+
+  <main class="content">
+    <h1>Examples</h1>
+    <p>Practical patterns you can copy and adapt. Each example includes the HTML and a sample server endpoint.</p>
+
+    <h2 id="click-to-load">1. Click to Load</h2>
+<pre><code>&lt;button p-request="GET /api/content > #output"&gt;Load Content&lt;/button&gt;
+&lt;div id="output"&gt;&lt;/div&gt;</code></pre>
+    <p><strong>Server (Express):</strong></p>
+<pre><code>app.get('/api/content', (req, res) => {
+  res.send('&lt;p&gt;Hello from the server!&lt;/p&gt;');
+});</code></pre>
+
+    <h2 id="form-submit">2. Form Submission with Validation</h2>
+<pre><code>&lt;form p-request="POST /api/register {this} > #result :validate :disable"&gt;
+  &lt;label&gt;
+    Email
+    &lt;input name="email" type="email" required&gt;
+  &lt;/label&gt;
+  &lt;label&gt;
+    Password
+    &lt;input name="password" type="password" minlength="8" required&gt;
+  &lt;/label&gt;
+  &lt;button type="submit"&gt;Register&lt;/button&gt;
+&lt;/form&gt;
+&lt;div id="result"&gt;&lt;/div&gt;</code></pre>
+    <p><strong>Server:</strong></p>
+<pre><code>app.post('/api/register', (req, res) => {
+  const { email, password } = req.body;
+  // ... create user
+  res.send('&lt;p class="success"&gt;Account created!&lt;/p&gt;');
+});</code></pre>
+
+    <h2 id="delete-confirm">3. Delete with Confirmation</h2>
+<pre><code>&lt;table&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Item 1&lt;/td&gt;
+    &lt;td&gt;
+      &lt;button p-request="DELETE /api/items/1 > closest tr.remove
+        :confirm('Delete this item?')"&gt;
+        Delete
+      &lt;/button&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;</code></pre>
+    <p><strong>Server:</strong></p>
+<pre><code>app.delete('/api/items/:id', (req, res) => {
+  Item.destroy(req.params.id);
+  res.send(''); // empty response for .remove behavior
+});</code></pre>
+
+    <h2 id="search">4. Search with Debounce</h2>
+<pre><code>&lt;input type="search" name="q"
+       p-request="GET /api/search > #results"
+       p-trigger="input debounce 300ms, keydown[key === 'Enter']"
+       placeholder="Search..."&gt;
+&lt;div id="results"&gt;&lt;/div&gt;</code></pre>
+    <p><strong>Server:</strong></p>
+<pre><code>app.get('/api/search', (req, res) => {
+  const results = search(req.query.q);
+  res.send(results.map(r =>
+    `&lt;div class="result"&gt;
+      &lt;h3&gt;${r.title}&lt;/h3&gt;
+      &lt;p&gt;${r.snippet}&lt;/p&gt;
+    &lt;/div&gt;`
+  ).join(''));
+});</code></pre>
+
+    <h2 id="polling">5. Polling / Live Updates</h2>
+<pre><code>&lt;div p-request="GET /api/notifications > this"
+     p-trigger="every 5s"&gt;
+  No new notifications
+&lt;/div&gt;</code></pre>
+    <p><strong>Server:</strong></p>
+<pre><code>app.get('/api/notifications', (req, res) => {
+  const notifications = getUnread(req.user);
+  if (notifications.length === 0) {
+    res.send('&lt;p&gt;No new notifications&lt;/p&gt;');
+  } else {
+    res.send(notifications.map(n =>
+      `&lt;div class="notification"&gt;${n.message}&lt;/div&gt;`
+    ).join(''));
+  }
+});</code></pre>
+
+    <h2 id="lazy-load">6. Lazy Loading (Revealed)</h2>
+<pre><code>&lt;div p-request="GET /api/comments > this"
+     p-trigger="revealed once"&gt;
+  &lt;p&gt;Loading comments...&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+
+    <h2 id="infinite-scroll">7. Infinite Scroll</h2>
+<pre><code>&lt;div id="feed"&gt;
+  &lt;!-- Initial items --&gt;
+&lt;/div&gt;
+&lt;div p-request="GET /api/feed?page=2 > #feed.append"
+     p-trigger="revealed once"&gt;
+  Loading more...
+&lt;/div&gt;</code></pre>
+    <p>The server returns both new items and a new sentinel element:</p>
+<pre><code>app.get('/api/feed', (req, res) => {
+  const page = parseInt(req.query.page);
+  const items = getFeedPage(page);
+  let html = items.map(i => `&lt;div class="item"&gt;${i.content}&lt;/div&gt;`).join('');
+  if (hasMore(page)) {
+    html += `&lt;div p-request="GET /api/feed?page=${page + 1} > #feed.append"
+                  p-trigger="revealed once"&gt;Loading more...&lt;/div&gt;`;
+  }
+  res.send(html);
+});</code></pre>
+
+    <h2 id="inline-edit">8. Inline Editable Table</h2>
+<pre><code>&lt;table&gt;
+  &lt;tr id="row-1"&gt;
+    &lt;td&gt;John Doe&lt;/td&gt;
+    &lt;td&gt;john@example.com&lt;/td&gt;
+    &lt;td&gt;
+      &lt;button p-request="GET /api/users/1/edit > #row-1.outer"&gt;Edit&lt;/button&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;</code></pre>
+    <p><strong>Edit form returned by server:</strong></p>
+<pre><code>&lt;tr id="row-1"&gt;
+  &lt;td&gt;&lt;input name="name" value="John Doe"&gt;&lt;/td&gt;
+  &lt;td&gt;&lt;input name="email" value="john@example.com"&gt;&lt;/td&gt;
+  &lt;td&gt;
+    &lt;button p-request="PUT /api/users/1 {closest tr} > #row-1.outer"&gt;Save&lt;/button&gt;
+    &lt;button p-request="GET /api/users/1 > #row-1.outer"&gt;Cancel&lt;/button&gt;
+  &lt;/td&gt;
+&lt;/tr&gt;</code></pre>
+
+    <h2 id="tabs">9. Tab Navigation</h2>
+<pre><code>&lt;nav&gt;
+  &lt;button p-request="GET /tabs/info > #tab-content" class="active"&gt;Info&lt;/button&gt;
+  &lt;button p-request="GET /tabs/settings > #tab-content"&gt;Settings&lt;/button&gt;
+  &lt;button p-request="GET /tabs/billing > #tab-content"&gt;Billing&lt;/button&gt;
+&lt;/nav&gt;
+&lt;div id="tab-content"&gt;
+  &lt;!-- Tab content loads here --&gt;
+&lt;/div&gt;</code></pre>
+
+    <h2 id="wizard">10. Multi-Step Wizard</h2>
+<pre><code>&lt;div id="wizard"&gt;
+  &lt;form p-request="POST /wizard/step-1 {this} > #wizard.outer :validate"&gt;
+    &lt;h3&gt;Step 1: Your Info&lt;/h3&gt;
+    &lt;input name="name" required placeholder="Name"&gt;
+    &lt;input name="email" type="email" required placeholder="Email"&gt;
+    &lt;button type="submit"&gt;Next&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/div&gt;</code></pre>
+    <p>Server returns the next step's form in the response, replacing the wizard container.</p>
+
+    <h2 id="todo">11. Todo List (CRUD)</h2>
+<pre><code>&lt;form p-request="POST /api/todos {this} > #todo-list.append :validate"
+      p-on="pulse:afterSwap: this.reset()"&gt;
+  &lt;input name="title" required placeholder="New todo..."&gt;
+  &lt;button type="submit"&gt;Add&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;ul id="todo-list"&gt;
+  &lt;li id="todo-1"&gt;
+    &lt;span&gt;Buy groceries&lt;/span&gt;
+    &lt;button p-request="PATCH /api/todos/1 {'completed': true} > #todo-1.outer"&gt;Done&lt;/button&gt;
+    &lt;button p-request="DELETE /api/todos/1 > #todo-1.remove :confirm('Delete?')"&gt;X&lt;/button&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+
+    <h2 id="oob-notifications">12. Notifications with OOB</h2>
+<pre><code>&lt;button p-request="POST /api/order {#order-form} > #confirmation :oob"&gt;
+  Place Order
+&lt;/button&gt;
+
+&lt;div id="confirmation"&gt;&lt;/div&gt;
+&lt;div id="cart-count"&gt;3&lt;/div&gt;</code></pre>
+    <p><strong>Server response with OOB update:</strong></p>
+<pre><code>&lt;p&gt;Order #1234 confirmed!&lt;/p&gt;
+
+&lt;div id="cart-count" p-oob="true"&gt;0&lt;/div&gt;</code></pre>
+    <p>The main content goes to <code>#confirmation</code>, and the cart count is updated out-of-band.</p>
+
+    <div class="page-nav">
+      <a class="prev" href="configuration.html">&larr; Configuration</a>
+      <a class="next" href="events.html">Events &amp; Lifecycle &rarr;</a>
+    </div>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

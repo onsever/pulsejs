@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modifier Reference — Pulse.js</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+  <aside class="sidebar"><div class="sidebar-brand"><h2>Pulse.js</h2><span class="version">v1.0.0</span></div><nav></nav></aside>
+
+  <main class="content">
+    <h1>Modifier Reference</h1>
+    <p>Modifiers appear at the end of a <code>p-request</code> string, prefixed with <code>:</code>. They control pre-request behavior, UI feedback, and response handling.</p>
+
+    <h2 id="overview">Overview</h2>
+    <table>
+      <thead><tr><th>Modifier</th><th>Syntax</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>:confirm</code></td><td><code>:confirm('message')</code></td><td>Show confirmation dialog before request</td></tr>
+        <tr><td><code>:prompt</code></td><td><code>:prompt('message')</code></td><td>Show prompt dialog, send value as header</td></tr>
+        <tr><td><code>:validate</code></td><td><code>:validate</code></td><td>Run HTML5 form validation</td></tr>
+        <tr><td><code>:disable</code></td><td><code>:disable</code> or <code>:disable(selector)</code></td><td>Disable element during request</td></tr>
+        <tr><td><code>:indicator</code></td><td><code>:indicator(selector)</code></td><td>Show loading indicator</td></tr>
+        <tr><td><code>:sync</code></td><td><code>:sync(mode)</code></td><td>Request synchronization mode</td></tr>
+        <tr><td><code>:timeout</code></td><td><code>:timeout(ms)</code></td><td>Request timeout in milliseconds</td></tr>
+        <tr><td><code>:multipart</code></td><td><code>:multipart</code></td><td>Send as multipart/form-data</td></tr>
+        <tr><td><code>:transition</code></td><td><code>:transition</code></td><td>Use View Transitions API</td></tr>
+        <tr><td><code>:scroll</code></td><td><code>:scroll(target)</code></td><td>Scroll after swap</td></tr>
+        <tr><td><code>:select</code></td><td><code>:select(selector)</code></td><td>Extract fragment from response</td></tr>
+        <tr><td><code>:oob</code></td><td><code>:oob</code></td><td>Process out-of-band swaps</td></tr>
+        <tr><td><code>:preserve</code></td><td><code>:preserve</code></td><td>Preserve element state across swaps</td></tr>
+        <tr><td><code>:swap</code></td><td><code>:swap(delay)</code></td><td>Delay before swap (ms)</td></tr>
+        <tr><td><code>:settle</code></td><td><code>:settle(delay)</code></td><td>Settle duration (ms)</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="confirm">:confirm(message)</h2>
+    <p>Shows a browser <code>confirm()</code> dialog. If the user cancels, the request is aborted.</p>
+<pre><code>&lt;button p-request="DELETE /item/1 > closest tr.remove :confirm('Delete this item?')"&gt;
+  Delete
+&lt;/button&gt;</code></pre>
+
+    <h2 id="prompt">:prompt(message)</h2>
+    <p>Shows a browser <code>prompt()</code> dialog. The entered value is sent in the <code>P-Prompt</code> request header. If cancelled, the request is aborted.</p>
+<pre><code>&lt;button p-request="PUT /item/1 :prompt('Enter new name:')"&gt;Rename&lt;/button&gt;</code></pre>
+
+    <h2 id="validate">:validate</h2>
+    <p>Runs the browser's built-in HTML5 constraint validation on the closest form. If validation fails, the request is aborted and validation messages are shown.</p>
+<pre><code>&lt;form p-request="POST /register {this} :validate"&gt;
+  &lt;input name="email" type="email" required&gt;
+  &lt;input name="password" minlength="8" required&gt;
+  &lt;button type="submit"&gt;Register&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+
+    <h2 id="disable">:disable / :disable(selector)</h2>
+    <p>Disables the triggering element (or a specified element) during the request. Re-enables on completion.</p>
+<pre><code>&lt;!-- Disable the button itself --&gt;
+&lt;button p-request="POST /submit {this} :disable"&gt;Submit&lt;/button&gt;
+
+&lt;!-- Disable a specific element --&gt;
+&lt;button p-request="POST /submit :disable(#submit-btn)"&gt;Submit&lt;/button&gt;</code></pre>
+
+    <h2 id="indicator">:indicator(selector)</h2>
+    <p>Adds the <code>pulse-request</code> CSS class to the specified element during the request. Use this to show/hide a loading spinner.</p>
+<pre><code>&lt;button p-request="GET /data :indicator(#spinner)"&gt;Load&lt;/button&gt;
+&lt;span id="spinner" class="pulse-indicator"&gt;Loading...&lt;/span&gt;</code></pre>
+<pre><code>/* CSS to show/hide indicator */
+.pulse-indicator { display: none; }
+.pulse-request .pulse-indicator,
+.pulse-indicator.pulse-request { display: inline-block; }</code></pre>
+
+    <h2 id="sync">:sync(mode)</h2>
+    <p>Controls how concurrent requests from the same element are handled.</p>
+    <table>
+      <thead><tr><th>Mode</th><th>Behavior</th></tr></thead>
+      <tbody>
+        <tr><td><code>replace</code></td><td>Abort the in-flight request, start new one (default)</td></tr>
+        <tr><td><code>drop</code></td><td>Ignore new request if one is in-flight</td></tr>
+        <tr><td><code>queue</code></td><td>Queue new request, execute after current completes</td></tr>
+      </tbody>
+    </table>
+<pre><code>&lt;!-- Drop duplicate requests --&gt;
+&lt;button p-request="POST /action :sync(drop)"&gt;Act&lt;/button&gt;
+
+&lt;!-- Queue requests --&gt;
+&lt;button p-request="POST /step :sync(queue)"&gt;Next&lt;/button&gt;</code></pre>
+
+    <h2 id="timeout">:timeout(ms)</h2>
+    <p>Sets a timeout for the request in milliseconds. If the request takes longer, it is aborted.</p>
+<pre><code>&lt;button p-request="GET /slow-api :timeout(5000)"&gt;Load (5s max)&lt;/button&gt;</code></pre>
+
+    <h2 id="multipart">:multipart</h2>
+    <p>Sends the request body as <code>multipart/form-data</code> instead of URL-encoded. Required for file uploads.</p>
+<pre><code>&lt;form p-request="POST /upload {this} :multipart"&gt;
+  &lt;input name="file" type="file"&gt;
+  &lt;button type="submit"&gt;Upload&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+
+    <h2 id="transition">:transition</h2>
+    <p>Wraps the swap in the View Transitions API for smooth animated transitions.</p>
+<pre><code>&lt;a p-request="GET /page/2 > #content :transition" p-history="push"&gt;Next Page&lt;/a&gt;</code></pre>
+    <div class="note">Requires browser support for the View Transitions API. Falls back to instant swap if unsupported.</div>
+
+    <h2 id="scroll">:scroll(target)</h2>
+    <p>Scrolls to a target after the swap completes.</p>
+<pre><code>&lt;button p-request="GET /more > #list.append :scroll(bottom)"&gt;Load More&lt;/button&gt;
+&lt;button p-request="GET /page > #content :scroll(top)"&gt;Next&lt;/button&gt;</code></pre>
+
+    <h2 id="select">:select(selector)</h2>
+    <p>Extracts only a fragment of the response HTML before swapping.</p>
+<pre><code>&lt;!-- Only swap in the #content part of the response --&gt;
+&lt;button p-request="GET /full-page > #main :select(#content)"&gt;Load&lt;/button&gt;</code></pre>
+
+    <h2 id="oob">:oob</h2>
+    <p>Enables processing of out-of-band swaps in the response. Elements with <code>p-oob</code> in the response will be swapped into their targets.</p>
+<pre><code>&lt;button p-request="POST /action > #result :oob"&gt;Act&lt;/button&gt;</code></pre>
+
+    <h2 id="preserve">:preserve</h2>
+    <p>Preserves the state of specific elements (focus, scroll position, etc.) across swaps. Elements with an <code>id</code> attribute are matched and their state is restored.</p>
+<pre><code>&lt;div p-request="GET /feed > this :preserve"&gt;...&lt;/div&gt;</code></pre>
+
+    <h2 id="swap-delay">:swap(delay)</h2>
+    <p>Adds a delay (in ms) before performing the DOM swap.</p>
+<pre><code>&lt;button p-request="GET /data > #output :swap(100)"&gt;Load&lt;/button&gt;</code></pre>
+
+    <h2 id="settle-delay">:settle(delay)</h2>
+    <p>Controls how long the <code>pulse-settling</code> CSS class remains on swapped content (in ms). Default is 20ms.</p>
+<pre><code>&lt;button p-request="GET /data > #output :settle(500)"&gt;Load&lt;/button&gt;</code></pre>
+
+    <div class="page-nav">
+      <a class="prev" href="triggers.html">&larr; p-trigger Deep Dive</a>
+      <a class="next" href="server-integration.html">Server Integration &rarr;</a>
+    </div>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>p-request Syntax — Pulse.js</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+  <aside class="sidebar"><div class="sidebar-brand"><h2>Pulse.js</h2><span class="version">v1.0.0</span></div><nav></nav></aside>
+
+  <main class="content">
+    <h1>p-request Syntax</h1>
+    <p>The <code>p-request</code> attribute is the heart of Pulse. It encodes the entire request-response lifecycle in one string.</p>
+
+    <h2 id="full-syntax">Full Syntax</h2>
+<pre><code>p-request="{headers} METHOD /url {body} > target.behavior :modifiers"</code></pre>
+    <p>Every part except the URL is optional. The parser reads left-to-right in a single pass.</p>
+
+    <h2 id="method">HTTP Method</h2>
+    <p>Supported methods: <code>GET</code> (default), <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code>.</p>
+<pre><code>&lt;button p-request="GET /data"&gt;Load&lt;/button&gt;
+&lt;button p-request="/data"&gt;Also GET (default)&lt;/button&gt;
+&lt;button p-request="POST /items"&gt;Create&lt;/button&gt;
+&lt;button p-request="DELETE /items/5"&gt;Remove&lt;/button&gt;</code></pre>
+
+    <h2 id="url">URL</h2>
+    <p>The URL is the only required component. It must start with <code>/</code>, <code>.</code>, or a protocol.</p>
+<pre><code>p-request="/api/users"
+p-request="./relative/path"
+p-request="https://api.example.com/data"</code></pre>
+
+    <h2 id="headers">Headers</h2>
+    <p>JSON object <strong>before</strong> the method/URL. Sent as additional request headers.</p>
+<pre><code>&lt;!-- Custom headers --&gt;
+&lt;button p-request="{'X-CSRF': 'abc123'} POST /api/data"&gt;Submit&lt;/button&gt;
+
+&lt;!-- Multiple headers --&gt;
+&lt;button p-request="{'Authorization': 'Bearer tok', 'Accept': 'text/html'} GET /secure"&gt;Load&lt;/button&gt;</code></pre>
+    <div class="tip">Headers can also be inherited from parent elements. See <a href="advanced.html#inheritance">Inheritance</a>.</div>
+
+    <h2 id="body">Request Body</h2>
+    <p>JSON object <strong>after</strong> the URL. Multiple body formats are supported:</p>
+
+    <h3>JSON Literal</h3>
+<pre><code>&lt;button p-request="POST /api/items {'name': 'Widget', 'price': 9.99}"&gt;Add&lt;/button&gt;</code></pre>
+
+    <h3>Form Selector</h3>
+    <p>Reference a form element by CSS selector to auto-collect its data.</p>
+<pre><code>&lt;button p-request="POST /submit {#myForm}"&gt;Submit&lt;/button&gt;
+&lt;button p-request="POST /submit {.registration-form}"&gt;Submit&lt;/button&gt;</code></pre>
+
+    <h3><code>{this}</code></h3>
+    <p>Collect form data from the element itself (for forms) or the closest form.</p>
+<pre><code>&lt;form p-request="POST /submit {this}"&gt;
+  &lt;input name="email" type="email"&gt;
+  &lt;button type="submit"&gt;Submit&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+
+    <h3>Field Filters</h3>
+    <p>Include or exclude specific fields from form data.</p>
+<pre><code>&lt;!-- Only send name and email --&gt;
+&lt;form p-request="POST /submit {only name, email}"&gt;...&lt;/form&gt;
+
+&lt;!-- Send everything except password --&gt;
+&lt;form p-request="POST /submit {not password}"&gt;...&lt;/form&gt;</code></pre>
+
+    <h2 id="target">Target</h2>
+    <p>The <code>&gt;</code> symbol specifies where the response HTML goes. Default is <code>this</code> (the triggering element).</p>
+
+    <h3>CSS Selector</h3>
+<pre><code>&lt;button p-request="GET /data > #output"&gt;Load&lt;/button&gt;
+&lt;button p-request="GET /data > .results-container"&gt;Load&lt;/button&gt;</code></pre>
+
+    <h3><code>this</code></h3>
+<pre><code>&lt;!-- Replace own content (default) --&gt;
+&lt;button p-request="GET /data > this"&gt;Load&lt;/button&gt;</code></pre>
+
+    <h3><code>closest</code></h3>
+    <p>Walks up the DOM tree to find the nearest matching ancestor.</p>
+<pre><code>&lt;button p-request="DELETE /item/1 > closest tr"&gt;Delete Row&lt;/button&gt;
+&lt;button p-request="PUT /item/1 > closest .card"&gt;Update Card&lt;/button&gt;</code></pre>
+
+    <h3><code>find</code></h3>
+    <p>Searches within the triggering element's subtree.</p>
+<pre><code>&lt;div p-request="GET /content > find .body"&gt;
+  &lt;div class="body"&gt;Content goes here&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+    <h2 id="behavior">Swap Behavior</h2>
+    <p>Appended to the target with a dot: <code>&gt; target.behavior</code>. Default is <code>replace</code> (innerHTML).</p>
+
+    <table>
+      <thead><tr><th>Behavior</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td><code>replace</code></td><td>Replace target's innerHTML (default)</td></tr>
+        <tr><td><code>outer</code></td><td>Replace the entire target element (outerHTML)</td></tr>
+        <tr><td><code>append</code></td><td>Append to end of target</td></tr>
+        <tr><td><code>prepend</code></td><td>Prepend to beginning of target</td></tr>
+        <tr><td><code>before</code></td><td>Insert before the target element</td></tr>
+        <tr><td><code>after</code></td><td>Insert after the target element</td></tr>
+        <tr><td><code>remove</code></td><td>Remove the target element</td></tr>
+        <tr><td><code>none</code></td><td>No DOM changes (fire events only)</td></tr>
+      </tbody>
+    </table>
+
+<pre><code>&lt;!-- Append to a list --&gt;
+&lt;button p-request="POST /items {this} > #list.append"&gt;Add Item&lt;/button&gt;
+
+&lt;!-- Replace entire element --&gt;
+&lt;div p-request="GET /card/1 > this.outer"&gt;Loading...&lt;/div&gt;
+
+&lt;!-- Delete a row --&gt;
+&lt;button p-request="DELETE /item/1 > closest tr.remove"&gt;Delete&lt;/button&gt;
+
+&lt;!-- Fire-and-forget --&gt;
+&lt;button p-request="POST /analytics/click > this.none"&gt;Track&lt;/button&gt;</code></pre>
+
+    <h2 id="modifiers">Modifiers</h2>
+    <p>Modifiers start with <code>:</code> and appear at the end. They control request behavior, timing, and UI feedback.</p>
+<pre><code>&lt;button p-request="DELETE /item/1 > closest tr.outer :confirm('Delete this?') :disable"&gt;
+  Delete
+&lt;/button&gt;</code></pre>
+    <p><a href="modifiers.html">Full modifier reference &rarr;</a></p>
+
+    <h2 id="full-examples">Full Examples</h2>
+<pre><code>&lt;!-- Minimal --&gt;
+&lt;button p-request="/api/hello"&gt;Hello&lt;/button&gt;
+
+&lt;!-- All components --&gt;
+&lt;button p-request="{'X-CSRF': 'tok'} POST /api/items {'name': 'Widget'} > #list.append :disable :indicator(#spinner)"&gt;
+  Add Item
+&lt;/button&gt;
+
+&lt;!-- Form with validation --&gt;
+&lt;form p-request="POST /register {this} > #result :validate :disable"&gt;
+  &lt;input name="email" required&gt;
+  &lt;button type="submit"&gt;Register&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;!-- Search with debounce --&gt;
+&lt;input p-request="GET /search > #results" p-trigger="input debounce 300ms" name="q"&gt;</code></pre>
+
+    <div class="page-nav">
+      <a class="prev" href="attributes.html">&larr; The 8 Attributes</a>
+      <a class="next" href="triggers.html">p-trigger Deep Dive &rarr;</a>
+    </div>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

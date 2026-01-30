@@ -1,0 +1,183 @@
+{
+  "scopeName": "pulse.injection",
+  "injectionSelector": "L:text.html",
+  "patterns": [
+    { "include": "#pulse-request-attr" },
+    { "include": "#pulse-trigger-attr" },
+    { "include": "#pulse-on-attr" },
+    { "include": "#pulse-other-attr" },
+    { "include": "#pulse-css-classes" }
+  ],
+  "repository": {
+    "pulse-request-attr": {
+      "begin": "\\b(p-request)(\\s*=\\s*)(\")",
+      "end": "(\")",
+      "beginCaptures": {
+        "1": { "name": "entity.other.attribute-name.pulse.html" },
+        "2": { "name": "punctuation.separator.key-value.html" },
+        "3": { "name": "punctuation.definition.string.begin.html" }
+      },
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.string.end.html" }
+      },
+      "contentName": "meta.attribute-value.pulse-request.html",
+      "patterns": [
+        { "include": "#request-headers-body" },
+        { "include": "#request-method" },
+        { "include": "#request-url" },
+        { "include": "#request-target-operator" },
+        { "include": "#request-target-selector" },
+        { "include": "#request-target-keyword" },
+        { "include": "#request-behavior" },
+        { "include": "#request-modifier" }
+      ]
+    },
+    "pulse-trigger-attr": {
+      "begin": "\\b(p-trigger)(\\s*=\\s*)(\")",
+      "end": "(\")",
+      "beginCaptures": {
+        "1": { "name": "entity.other.attribute-name.pulse.html" },
+        "2": { "name": "punctuation.separator.key-value.html" },
+        "3": { "name": "punctuation.definition.string.begin.html" }
+      },
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.string.end.html" }
+      },
+      "contentName": "meta.attribute-value.pulse-trigger.html",
+      "patterns": [
+        { "include": "#trigger-keywords" },
+        { "include": "#trigger-timing" },
+        { "include": "#trigger-filter" }
+      ]
+    },
+    "pulse-on-attr": {
+      "begin": "\\b(p-on)(\\s*=\\s*)(\")",
+      "end": "(\")",
+      "beginCaptures": {
+        "1": { "name": "entity.other.attribute-name.pulse.html" },
+        "2": { "name": "punctuation.separator.key-value.html" },
+        "3": { "name": "punctuation.definition.string.begin.html" }
+      },
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.string.end.html" }
+      },
+      "contentName": "meta.attribute-value.pulse-on.html",
+      "patterns": [
+        {
+          "match": "\\b(before|beforeSend|beforeSwap|afterSwap|afterSettle|error|pulse:before|pulse:beforeSend|pulse:beforeSwap|pulse:afterSwap|pulse:afterSettle|pulse:error)\\s*(:)",
+          "captures": {
+            "1": { "name": "support.type.event.pulse" },
+            "2": { "name": "punctuation.separator.event.pulse" }
+          }
+        },
+        {
+          "match": "(\\|)",
+          "name": "keyword.operator.pipe.pulse"
+        },
+        {
+          "match": "'[^']*'",
+          "name": "string.quoted.single.pulse"
+        },
+        {
+          "match": "\\b([a-zA-Z_$][a-zA-Z0-9_$]*)\\s*(\\()",
+          "captures": {
+            "1": { "name": "entity.name.function.js.pulse" },
+            "2": { "name": "punctuation.definition.parameters.begin.pulse" }
+          }
+        }
+      ]
+    },
+    "pulse-other-attr": {
+      "comment": "Highlight p-* attribute names (non-request/trigger)",
+      "match": "\\b(p-(?:history|boost|oob|ignore|inherit))(?=\\s*=|\\s|>|/>)",
+      "captures": {
+        "1": { "name": "entity.other.attribute-name.pulse.html" }
+      }
+    },
+    "pulse-css-classes": {
+      "match": "\\b(pulse-request|pulse-swapping|pulse-settling|pulse-added)\\b",
+      "name": "support.constant.css-class.pulse"
+    },
+
+    "request-method": {
+      "match": "\\b(GET|POST|PUT|PATCH|DELETE)\\b",
+      "name": "keyword.other.method.pulse"
+    },
+    "request-url": {
+      "match": "(/[^\\s\"{}>:]*)",
+      "name": "string.other.url.pulse"
+    },
+    "request-headers-body": {
+      "begin": "(\\{)",
+      "end": "(\\})",
+      "beginCaptures": { "1": { "name": "punctuation.section.braces.begin.pulse" } },
+      "endCaptures": { "1": { "name": "punctuation.section.braces.end.pulse" } },
+      "contentName": "meta.brace-content.pulse",
+      "patterns": [
+        {
+          "match": "(#[a-zA-Z][a-zA-Z0-9_-]*)",
+          "name": "entity.other.selector.pulse"
+        },
+        {
+          "match": "\\b(this)\\b",
+          "name": "variable.language.this.pulse"
+        },
+        {
+          "match": "\\b(only|not)\\b",
+          "name": "keyword.other.filter.pulse"
+        },
+        {
+          "match": "'[^']*'",
+          "name": "string.quoted.single.pulse"
+        },
+        {
+          "match": "[a-zA-Z_][a-zA-Z0-9_-]*",
+          "name": "variable.other.field.pulse"
+        }
+      ]
+    },
+    "request-target-operator": {
+      "match": "(>)",
+      "name": "keyword.operator.target.pulse"
+    },
+    "request-target-selector": {
+      "match": "(?<=>\\s*)(#[a-zA-Z][a-zA-Z0-9_-]*)",
+      "name": "entity.other.selector.pulse"
+    },
+    "request-target-keyword": {
+      "match": "\\b(this|closest|find)\\b",
+      "name": "variable.language.target.pulse"
+    },
+    "request-behavior": {
+      "match": "\\.(replace|outer|append|prepend|before|after|remove|none)\\b",
+      "name": "support.constant.behavior.pulse"
+    },
+    "request-modifier": {
+      "match": "(:)(confirm|prompt|validate|disable|indicator|sync|timeout|multipart|transition|scroll|select|oob|preserve|swap|settle)(\\([^)]*\\))?",
+      "captures": {
+        "1": { "name": "punctuation.definition.modifier.pulse" },
+        "2": { "name": "entity.name.function.modifier.pulse" },
+        "3": { "name": "string.other.modifier-value.pulse" }
+      }
+    },
+
+    "trigger-keywords": {
+      "match": "\\b(click|submit|input|change|keyup|keydown|keypress|mouseenter|mouseleave|focus|blur|load|revealed|intersect|every|once|changed|consume|debounce|throttle|delay|from)\\b",
+      "name": "support.type.trigger.pulse"
+    },
+    "trigger-timing": {
+      "match": "(\\d+)(ms|s)\\b",
+      "captures": {
+        "1": { "name": "constant.numeric.pulse" },
+        "2": { "name": "keyword.other.unit.pulse" }
+      }
+    },
+    "trigger-filter": {
+      "begin": "(\\[)",
+      "end": "(\\])",
+      "beginCaptures": { "1": { "name": "punctuation.section.bracket.begin.pulse" } },
+      "endCaptures": { "1": { "name": "punctuation.section.bracket.end.pulse" } },
+      "contentName": "meta.filter-expression.pulse"
+    }
+  }
+}

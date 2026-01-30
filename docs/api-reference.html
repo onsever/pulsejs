@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Reference — Pulse.js</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+  <aside class="sidebar"><div class="sidebar-brand"><h2>Pulse.js</h2><span class="version">v1.0.0</span></div><nav></nav></aside>
+
+  <main class="content">
+    <h1>API Reference</h1>
+
+    <h2 id="js-api">JavaScript API</h2>
+    <table>
+      <thead><tr><th>Method</th><th>Signature</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>Pulse.init()</code></td>
+          <td><code>init(config?: Partial&lt;PulseConfig&gt;): void</code></td>
+          <td>Initialize Pulse with optional config overrides. Called automatically on DOMContentLoaded.</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.config()</code></td>
+          <td><code>config(overrides: Partial&lt;PulseConfig&gt;): void</code></td>
+          <td>Update configuration at runtime.</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.process()</code></td>
+          <td><code>process(root?: Element | Document): void</code></td>
+          <td>Process a DOM subtree for Pulse attributes. Defaults to entire document.</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.version</code></td>
+          <td><code>string</code></td>
+          <td>Current version string (e.g., <code>"1.0.0"</code>).</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.ajax()</code></td>
+          <td><code>ajax(method, url, target?, options?): Promise&lt;void&gt;</code></td>
+          <td>Fire a Pulse request programmatically. Options: <code>{ headers, body, swap }</code>.</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.swap()</code></td>
+          <td><code>swap(target, content, behavior?): Promise&lt;void&gt;</code></td>
+          <td>Swap HTML content into a target element. Target can be a selector or Element.</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.trigger()</code></td>
+          <td><code>trigger(el, eventName, detail?): void</code></td>
+          <td>Dispatch a custom event on an element.</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.on()</code></td>
+          <td><code>on(eventName, handler): void</code></td>
+          <td>Add a global listener for a Pulse lifecycle event. Auto-prefixes <code>pulse:</code>.</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.off()</code></td>
+          <td><code>off(eventName, handler): void</code></td>
+          <td>Remove a global Pulse event listener.</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.find()</code></td>
+          <td><code>find(selector): Element | null</code></td>
+          <td>Shorthand for <code>document.querySelector()</code>.</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.findAll()</code></td>
+          <td><code>findAll(selector): Element[]</code></td>
+          <td>Shorthand for <code>document.querySelectorAll()</code> (returns array).</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.closest()</code></td>
+          <td><code>closest(el, selector): Element | null</code></td>
+          <td>Find closest ancestor matching selector.</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.addClass()</code></td>
+          <td><code>addClass(el, className): void</code></td>
+          <td>Add a CSS class to an element.</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.removeClass()</code></td>
+          <td><code>removeClass(el, className): void</code></td>
+          <td>Remove a CSS class from an element.</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.toggleClass()</code></td>
+          <td><code>toggleClass(el, className): void</code></td>
+          <td>Toggle a CSS class on an element.</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.remove()</code></td>
+          <td><code>remove(el): void</code></td>
+          <td>Remove an element from the DOM.</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.values()</code></td>
+          <td><code>values(el): Record&lt;string, string&gt;</code></td>
+          <td>Collect form values from an element or form.</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.defineExtension()</code></td>
+          <td><code>defineExtension(name, ext): void</code></td>
+          <td>Register a Pulse extension.</td>
+        </tr>
+        <tr>
+          <td><code>Pulse.removeExtension()</code></td>
+          <td><code>removeExtension(name): void</code></td>
+          <td>Unregister a Pulse extension.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="types">TypeScript Types</h2>
+
+    <h3>PulseConfig</h3>
+<pre><code>interface PulseConfig {
+  defaultSwap: SwapBehavior;       // 'replace'
+  defaultTarget: string;           // 'this'
+  timeout: number;                 // 0
+  historyEnabled: boolean;         // true
+  historyCacheSize: number;        // 10
+  refreshOnHistoryMiss: boolean;   // false
+  scrollBehavior: ScrollBehavior;  // 'instant'
+  selfRequestsOnly: boolean;      // true
+  allowScriptTags: boolean;       // true
+  allowEval: boolean;             // true
+  globalViewTransitions: boolean;  // false
+  indicatorClass: string;          // 'pulse-indicator'
+  requestClass: string;            // 'pulse-request'
+  defaultSwapDelay: number;        // 0
+  defaultSettleDelay: number;      // 20
+  withCredentials: boolean;        // false
+  ignoreTitle: boolean;            // false
+  inlineScriptNonce: string;       // ''
+  responseHandling: ResponseHandlingConfig[];
+}</code></pre>
+
+    <h3>ParsedRequest</h3>
+<pre><code>interface ParsedRequest {
+  headers: Record&lt;string, string&gt;;
+  method: HttpMethod;
+  url: string;
+  body: ParsedBody | null;
+  target: ParsedTarget;
+  modifiers: ParsedModifier[];
+}
+
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+
+interface ParsedTarget {
+  selector: string;
+  behavior: SwapBehavior;
+}
+
+type SwapBehavior = 'replace' | 'outer' | 'append' | 'prepend'
+                  | 'before' | 'after' | 'remove' | 'none';
+
+interface ParsedBody {
+  type: 'json' | 'selectors' | 'filter';
+  data: Record&lt;string, string&gt; | null;
+  selectors: string[] | null;
+  filter: { mode: 'only' | 'not'; fields: string[] } | null;
+}
+
+interface ParsedModifier {
+  name: string;
+  value: string | null;
+}</code></pre>
+
+    <h3>ParsedTrigger</h3>
+<pre><code>interface ParsedTrigger {
+  events: ParsedTriggerEvent[];
+}
+
+interface ParsedTriggerEvent {
+  name: string;
+  isPolling: boolean;
+  pollingInterval: number | null;
+  filter: string | null;
+  modifiers: TriggerModifiers;
+  from: string | null;
+}
+
+interface TriggerModifiers {
+  once: boolean;
+  changed: boolean;
+  consume: boolean;
+  debounce: number | null;
+  throttle: number | null;
+  delay: number | null;
+}</code></pre>
+
+    <h2 id="attributes-ref">Attributes Quick Reference</h2>
+    <table>
+      <thead><tr><th>Attribute</th><th>Syntax</th><th>Default</th></tr></thead>
+      <tbody>
+        <tr><td><code>p-request</code></td><td><code>{headers} METHOD /url {body} > target.behavior :modifiers</code></td><td>&mdash;</td></tr>
+        <tr><td><code>p-trigger</code></td><td><code>event modifiers, ...</code></td><td>Per element type</td></tr>
+        <tr><td><code>p-on</code></td><td><code>event: handler() | ...</code></td><td>&mdash;</td></tr>
+        <tr><td><code>p-history</code></td><td><code>push | replace | false</code></td><td>&mdash;</td></tr>
+        <tr><td><code>p-boost</code></td><td><code>true | false</code></td><td>&mdash;</td></tr>
+        <tr><td><code>p-oob</code></td><td><code>true | behavior</code></td><td><code>replace</code></td></tr>
+        <tr><td><code>p-ignore</code></td><td>(boolean attribute)</td><td>&mdash;</td></tr>
+        <tr><td><code>p-inherit</code></td><td><code>false | attribute-list</code></td><td>Inherit all</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="modifiers-ref">Modifiers Quick Reference</h2>
+    <table>
+      <thead><tr><th>Modifier</th><th>Syntax</th></tr></thead>
+      <tbody>
+        <tr><td><code>:confirm</code></td><td><code>:confirm('message')</code></td></tr>
+        <tr><td><code>:prompt</code></td><td><code>:prompt('message')</code></td></tr>
+        <tr><td><code>:validate</code></td><td><code>:validate</code></td></tr>
+        <tr><td><code>:disable</code></td><td><code>:disable</code> or <code>:disable(selector)</code></td></tr>
+        <tr><td><code>:indicator</code></td><td><code>:indicator(selector)</code></td></tr>
+        <tr><td><code>:sync</code></td><td><code>:sync(replace|drop|queue)</code></td></tr>
+        <tr><td><code>:timeout</code></td><td><code>:timeout(ms)</code></td></tr>
+        <tr><td><code>:multipart</code></td><td><code>:multipart</code></td></tr>
+        <tr><td><code>:transition</code></td><td><code>:transition</code></td></tr>
+        <tr><td><code>:scroll</code></td><td><code>:scroll(top|bottom)</code></td></tr>
+        <tr><td><code>:select</code></td><td><code>:select(selector)</code></td></tr>
+        <tr><td><code>:oob</code></td><td><code>:oob</code></td></tr>
+        <tr><td><code>:preserve</code></td><td><code>:preserve</code></td></tr>
+        <tr><td><code>:swap</code></td><td><code>:swap(delay-ms)</code></td></tr>
+        <tr><td><code>:settle</code></td><td><code>:settle(delay-ms)</code></td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="request-headers-ref">Request Headers Reference</h2>
+    <table>
+      <thead><tr><th>Header</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td><code>P-Request</code></td><td><code>true</code></td></tr>
+        <tr><td><code>P-Current-URL</code></td><td>Current page URL</td></tr>
+        <tr><td><code>P-Target</code></td><td>Target element ID</td></tr>
+        <tr><td><code>P-Trigger</code></td><td>Triggering element ID</td></tr>
+        <tr><td><code>P-Trigger-Name</code></td><td>Triggering element name</td></tr>
+        <tr><td><code>P-Boosted</code></td><td><code>true</code> (if boosted)</td></tr>
+        <tr><td><code>P-Prompt</code></td><td>Prompt dialog value</td></tr>
+        <tr><td><code>P-History-Restore-Request</code></td><td><code>true</code> (if history restore)</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="response-headers-ref">Response Headers Reference</h2>
+    <table>
+      <thead><tr><th>Header</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>P-Location</code></td><td>Client-side navigation via ajax</td></tr>
+        <tr><td><code>P-Redirect</code></td><td>Redirect browser to URL</td></tr>
+        <tr><td><code>P-Refresh</code></td><td>Reload current page</td></tr>
+        <tr><td><code>P-Retarget</code></td><td>Override swap target</td></tr>
+        <tr><td><code>P-Reswap</code></td><td>Override swap behavior</td></tr>
+        <tr><td><code>P-Reselect</code></td><td>Override :select modifier</td></tr>
+        <tr><td><code>P-Push</code></td><td>Push URL to history</td></tr>
+        <tr><td><code>P-Replace</code></td><td>Replace URL in history</td></tr>
+        <tr><td><code>P-Trigger</code></td><td>Dispatch events immediately</td></tr>
+        <tr><td><code>P-Trigger-After-Swap</code></td><td>Dispatch events after swap</td></tr>
+        <tr><td><code>P-Trigger-After-Settle</code></td><td>Dispatch events after settle</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="css-ref">CSS Classes Reference</h2>
+    <table>
+      <thead><tr><th>Class</th><th>Applied To</th><th>Duration</th></tr></thead>
+      <tbody>
+        <tr><td><code>pulse-request</code></td><td>Trigger element + indicator</td><td>During request</td></tr>
+        <tr><td><code>pulse-swapping</code></td><td>Target element</td><td>During swap</td></tr>
+        <tr><td><code>pulse-settling</code></td><td>Target element</td><td>Settle period (default 20ms)</td></tr>
+        <tr><td><code>pulse-added</code></td><td>New elements</td><td>Settle period (default 20ms)</td></tr>
+        <tr><td><code>pulse-indicator</code></td><td>Loading indicators</td><td>Configured via CSS</td></tr>
+      </tbody>
+    </table>
+
+    <div class="page-nav">
+      <a class="prev" href="advanced.html">&larr; Advanced Topics</a>
+      <a class="next" href="#"></a>
+    </div>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

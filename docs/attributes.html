@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The 8 Attributes — Pulse.js</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+  <aside class="sidebar"><div class="sidebar-brand"><h2>Pulse.js</h2><span class="version">v1.0.0</span></div><nav></nav></aside>
+
+  <main class="content">
+    <h1>The 8 Attributes</h1>
+    <p>Pulse.js uses just 8 declarative attributes to handle requests, events, history, and more. Here's a complete overview.</p>
+
+    <table>
+      <thead><tr><th>#</th><th>Attribute</th><th>Purpose</th><th>Required</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>p-request</code></td><td>HTTP request + response handling</td><td>Yes</td></tr>
+        <tr><td>2</td><td><code>p-trigger</code></td><td>When the request fires</td><td>No</td></tr>
+        <tr><td>3</td><td><code>p-on</code></td><td>Lifecycle event hooks</td><td>No</td></tr>
+        <tr><td>4</td><td><code>p-history</code></td><td>URL / history management</td><td>No</td></tr>
+        <tr><td>5</td><td><code>p-boost</code></td><td>Progressive enhancement</td><td>No</td></tr>
+        <tr><td>6</td><td><code>p-oob</code></td><td>Out-of-band swap marker</td><td>No</td></tr>
+        <tr><td>7</td><td><code>p-ignore</code></td><td>Skip processing</td><td>No</td></tr>
+        <tr><td>8</td><td><code>p-inherit</code></td><td>Inheritance control</td><td>No</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="p-request">1. p-request</h2>
+    <p>The core attribute. Encodes method, URL, headers, body, target, swap behavior, and modifiers into one string.</p>
+<pre><code>p-request="{headers} METHOD /url {body} > target.behavior :modifiers"</code></pre>
+    <p><strong>Examples:</strong></p>
+<pre><code>&lt;!-- Simple GET --&gt;
+&lt;button p-request="GET /api/data"&gt;Load&lt;/button&gt;
+
+&lt;!-- POST with body, target, and modifier --&gt;
+&lt;button p-request="POST /api/items {this} > #list.append :disable"&gt;Add&lt;/button&gt;
+
+&lt;!-- DELETE with confirmation --&gt;
+&lt;button p-request="DELETE /item/1 > closest tr.outer :confirm('Sure?')"&gt;Delete&lt;/button&gt;</code></pre>
+    <p><a href="request-syntax.html">Full p-request syntax reference &rarr;</a></p>
+
+    <h2 id="p-trigger">2. p-trigger</h2>
+    <p>Controls when the request fires. Has smart defaults per element type.</p>
+<pre><code>p-trigger="event modifiers"</code></pre>
+    <p><strong>Defaults:</strong> buttons/links &rarr; <code>click</code>, forms &rarr; <code>submit</code>, inputs &rarr; <code>input</code>, selects &rarr; <code>change</code>.</p>
+<pre><code>&lt;!-- Debounced input --&gt;
+&lt;input p-request="GET /search" p-trigger="input debounce 300ms"&gt;
+
+&lt;!-- Keyboard shortcut --&gt;
+&lt;button p-request="POST /save" p-trigger="keydown[key === 'Enter'] from body"&gt;Save&lt;/button&gt;
+
+&lt;!-- Polling --&gt;
+&lt;div p-request="GET /notifications" p-trigger="every 5s"&gt;&lt;/div&gt;</code></pre>
+    <p><a href="triggers.html">Full p-trigger reference &rarr;</a></p>
+
+    <h2 id="p-on">3. p-on</h2>
+    <p>Attach handlers to Pulse lifecycle events directly in HTML.</p>
+<pre><code>p-on="eventName: handler() | eventName: handler()"</code></pre>
+<pre><code>&lt;!-- Log before request --&gt;
+&lt;button p-request="GET /data" p-on="pulse:before: console.log('Requesting...')"&gt;Load&lt;/button&gt;
+
+&lt;!-- Multiple handlers --&gt;
+&lt;form p-request="POST /submit {this}"
+      p-on="pulse:afterSwap: showToast('Saved!') | pulse:error: showToast('Error')"&gt;
+&lt;/form&gt;</code></pre>
+    <p><a href="events.html">Events &amp; Lifecycle reference &rarr;</a></p>
+
+    <h2 id="p-history">4. p-history</h2>
+    <p>Controls browser history integration.</p>
+<pre><code>&lt;!-- Push URL to history --&gt;
+&lt;a p-request="GET /page/2 > #content" p-history="push"&gt;Page 2&lt;/a&gt;
+
+&lt;!-- Replace current URL --&gt;
+&lt;button p-request="GET /tab/info > #tab-content" p-history="replace"&gt;Info&lt;/button&gt;
+
+&lt;!-- Disable history --&gt;
+&lt;button p-request="GET /data" p-history="false"&gt;Load&lt;/button&gt;</code></pre>
+
+    <h2 id="p-boost">5. p-boost</h2>
+    <p>Progressively enhances standard links and forms to use Pulse requests.</p>
+<pre><code>&lt;!-- Boost all links in a nav --&gt;
+&lt;nav p-boost="true"&gt;
+  &lt;a href="/home"&gt;Home&lt;/a&gt;
+  &lt;a href="/about"&gt;About&lt;/a&gt;
+  &lt;a href="/contact" p-boost="false"&gt;Contact (full reload)&lt;/a&gt;
+&lt;/nav&gt;
+
+&lt;!-- Boost a form --&gt;
+&lt;form action="/search" method="GET" p-boost="true"&gt;
+  &lt;input name="q"&gt;
+  &lt;button type="submit"&gt;Search&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+
+    <h2 id="p-oob">6. p-oob</h2>
+    <p>Marks elements in a server response for out-of-band swaps &mdash; updating parts of the page outside the main target.</p>
+<pre><code>&lt;!-- Server response with OOB --&gt;
+&lt;div id="main-content"&gt;Main content here&lt;/div&gt;
+&lt;div id="notification-count" p-oob="true"&gt;3&lt;/div&gt;
+&lt;div id="sidebar" p-oob="outer"&gt;Updated sidebar&lt;/div&gt;</code></pre>
+
+    <h2 id="p-ignore">7. p-ignore</h2>
+    <p>Prevents Pulse from processing an element and its entire subtree.</p>
+<pre><code>&lt;div p-ignore&gt;
+  &lt;!-- Pulse will not process any p-* attributes in here --&gt;
+  &lt;button p-request="GET /nope"&gt;This won't work&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+    <h2 id="p-inherit">8. p-inherit</h2>
+    <p>Controls how attributes (especially headers) propagate from parent elements.</p>
+<pre><code>&lt;!-- Parent sets headers for all children --&gt;
+&lt;div p-request="{'X-CSRF': 'token123'}"&gt;
+  &lt;button p-request="POST /item"&gt;Create&lt;/button&gt;
+  &lt;button p-request="DELETE /item/1"&gt;Delete&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Stop inheritance --&gt;
+&lt;div p-inherit="false"&gt;
+  &lt;button p-request="GET /public"&gt;No inherited headers&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+    <div class="page-nav">
+      <a class="prev" href="index.html">&larr; Getting Started</a>
+      <a class="next" href="request-syntax.html">p-request Syntax &rarr;</a>
+    </div>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

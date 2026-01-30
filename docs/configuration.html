@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuration — Pulse.js</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+  <aside class="sidebar"><div class="sidebar-brand"><h2>Pulse.js</h2><span class="version">v1.0.0</span></div><nav></nav></aside>
+
+  <main class="content">
+    <h1>Configuration</h1>
+    <p>Pulse works with zero configuration, but you can customize its behavior.</p>
+
+    <h2 id="init">Pulse.init()</h2>
+    <p>Call <code>Pulse.init()</code> with a config object to override defaults. Pulse auto-calls <code>init()</code> on <code>DOMContentLoaded</code>, so you only need this for custom settings.</p>
+<pre><code>&lt;script&gt;
+  // Disable auto-init by calling init() before DOMContentLoaded
+  Pulse.init({
+    defaultSwap: 'outer',
+    timeout: 10000,
+    selfRequestsOnly: false
+  });
+&lt;/script&gt;</code></pre>
+
+    <h2 id="options">All Options</h2>
+    <table>
+      <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>defaultSwap</code></td><td>string</td><td><code>'replace'</code></td><td>Default swap behavior when none specified</td></tr>
+        <tr><td><code>defaultTarget</code></td><td>string</td><td><code>'this'</code></td><td>Default target when none specified</td></tr>
+        <tr><td><code>timeout</code></td><td>number</td><td><code>0</code></td><td>Global request timeout in ms (0 = no timeout)</td></tr>
+        <tr><td><code>historyEnabled</code></td><td>boolean</td><td><code>true</code></td><td>Enable history/popstate handling</td></tr>
+        <tr><td><code>historyCacheSize</code></td><td>number</td><td><code>10</code></td><td>Max pages cached for back/forward</td></tr>
+        <tr><td><code>refreshOnHistoryMiss</code></td><td>boolean</td><td><code>false</code></td><td>Full reload on history cache miss</td></tr>
+        <tr><td><code>scrollBehavior</code></td><td>string</td><td><code>'instant'</code></td><td>Scroll behavior: <code>'instant'</code>, <code>'smooth'</code>, <code>'auto'</code></td></tr>
+        <tr><td><code>selfRequestsOnly</code></td><td>boolean</td><td><code>true</code></td><td>Only allow requests to same origin</td></tr>
+        <tr><td><code>allowScriptTags</code></td><td>boolean</td><td><code>true</code></td><td>Execute script tags in swapped content</td></tr>
+        <tr><td><code>allowEval</code></td><td>boolean</td><td><code>true</code></td><td>Allow eval in trigger filters and p-on handlers</td></tr>
+        <tr><td><code>globalViewTransitions</code></td><td>boolean</td><td><code>false</code></td><td>Use View Transitions for all swaps</td></tr>
+        <tr><td><code>indicatorClass</code></td><td>string</td><td><code>'pulse-indicator'</code></td><td>CSS class for loading indicators</td></tr>
+        <tr><td><code>requestClass</code></td><td>string</td><td><code>'pulse-request'</code></td><td>CSS class added during requests</td></tr>
+        <tr><td><code>defaultSwapDelay</code></td><td>number</td><td><code>0</code></td><td>Default delay before swap (ms)</td></tr>
+        <tr><td><code>defaultSettleDelay</code></td><td>number</td><td><code>20</code></td><td>Default settle duration (ms)</td></tr>
+        <tr><td><code>withCredentials</code></td><td>boolean</td><td><code>false</code></td><td>Include credentials in cross-origin requests</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="meta">Meta Tag Configuration</h2>
+    <p>You can also configure Pulse via a <code>&lt;meta&gt;</code> tag in the document head:</p>
+<pre><code>&lt;meta name="pulse-config" content='{"timeout": 5000, "selfRequestsOnly": false}'&gt;</code></pre>
+
+    <h2 id="runtime">Runtime Configuration</h2>
+    <p>Change configuration after initialization:</p>
+<pre><code>// Update specific options
+Pulse.config({
+  timeout: 10000,
+  scrollBehavior: 'smooth'
+});</code></pre>
+
+    <h2 id="process">Manual Processing</h2>
+    <p>If you add HTML to the page dynamically (not via Pulse), you can tell Pulse to scan it:</p>
+<pre><code>// Process a specific subtree
+const newContent = document.getElementById('dynamic-content');
+Pulse.process(newContent);
+
+// Process entire document
+Pulse.process();</code></pre>
+    <div class="note">You don't need to call <code>process()</code> for content swapped by Pulse &mdash; it automatically processes new content after each swap.</div>
+
+    <h2 id="security">Security Options</h2>
+    <h3>selfRequestsOnly</h3>
+    <p>When <code>true</code> (default), Pulse only allows requests to the same origin. This prevents open redirect and SSRF-like attacks from malicious HTML.</p>
+
+    <h3>allowScriptTags</h3>
+    <p>Controls whether <code>&lt;script&gt;</code> tags in swapped content are executed. Default is <code>true</code>.</p>
+
+    <h3>allowEval</h3>
+    <p>Controls whether <code>p-trigger</code> filters (<code>[ctrlKey]</code>) and <code>p-on</code> handlers can use <code>new Function()</code>. Default is <code>true</code>. Set to <code>false</code> for strict CSP environments.</p>
+
+    <div class="page-nav">
+      <a class="prev" href="server-integration.html">&larr; Server Integration</a>
+      <a class="next" href="examples.html">Examples &rarr;</a>
+    </div>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

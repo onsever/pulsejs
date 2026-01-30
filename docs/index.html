@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pulse.js — Getting Started</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h2>Pulse.js</h2>
+      <span class="version">v1.0.0</span>
+    </div>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+    <div class="hero">
+      <h1>Pulse.js</h1>
+      <p>A lightweight, declarative library for building dynamic HTML applications. 8 attributes. One unified syntax.</p>
+    </div>
+
+    <h2 id="what">What Is Pulse.js?</h2>
+    <p>Pulse.js lets you build dynamic HTML applications with simple declarative attributes &mdash; no JavaScript required. It sends AJAX requests, swaps content into the DOM, and handles events, history, and more, all from your HTML.</p>
+    <p>The core innovation is the <code>p-request</code> attribute, which encodes method, URL, headers, body, target, swap behavior, and modifiers into one readable string.</p>
+
+<pre><code>&lt;button p-request="DELETE /item/1 &gt; closest tr.outer :confirm('Sure?')"&gt;
+  Delete
+&lt;/button&gt;</code></pre>
+
+    <h2 id="install">Installation</h2>
+
+    <h3>CDN</h3>
+<pre><code>&lt;script src="https://unpkg.com/pulse-js@1.0.0/dist/pulse.min.js"&gt;&lt;/script&gt;</code></pre>
+
+    <h3>npm</h3>
+<pre><code>npm install pulse-js</code></pre>
+
+    <h3>ESM Import</h3>
+<pre><code>import Pulse from 'pulse-js';</code></pre>
+
+    <p>Pulse auto-initializes on <code>DOMContentLoaded</code>. No setup code needed for basic usage.</p>
+
+    <h2 id="first-example">Your First Example</h2>
+<pre><code>&lt;!-- Click the button, GET /hello, replace button contents --&gt;
+&lt;button p-request="GET /hello"&gt;
+  Click me
+&lt;/button&gt;</code></pre>
+    <p>That's it. When clicked, Pulse sends a <code>GET</code> request to <code>/hello</code> and replaces the button's inner HTML with the response.</p>
+
+    <h2 id="attributes-overview">The 8 Attributes</h2>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Attribute</th><th>Purpose</th><th>Required</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><code>p-request</code></td><td>HTTP request + response handling</td><td>Yes (for actions)</td></tr>
+        <tr><td>2</td><td><code>p-trigger</code></td><td>When the request fires</td><td>No</td></tr>
+        <tr><td>3</td><td><code>p-on</code></td><td>Lifecycle event hooks</td><td>No</td></tr>
+        <tr><td>4</td><td><code>p-history</code></td><td>URL / history management</td><td>No</td></tr>
+        <tr><td>5</td><td><code>p-boost</code></td><td>Progressive enhancement for links/forms</td><td>No</td></tr>
+        <tr><td>6</td><td><code>p-oob</code></td><td>Out-of-band swap marker</td><td>No</td></tr>
+        <tr><td>7</td><td><code>p-ignore</code></td><td>Skip Pulse processing</td><td>No</td></tr>
+        <tr><td>8</td><td><code>p-inherit</code></td><td>Control attribute inheritance</td><td>No</td></tr>
+      </tbody>
+    </table>
+    <p><a href="attributes.html">Learn about all 8 attributes &rarr;</a></p>
+
+    <h2 id="next">What's Next?</h2>
+    <ul>
+      <li><a href="attributes.html">The 8 Attributes</a> &mdash; overview of every attribute</li>
+      <li><a href="request-syntax.html">p-request Syntax</a> &mdash; deep dive into the core attribute</li>
+      <li><a href="examples.html">Examples</a> &mdash; practical patterns you can copy</li>
+      <li><a href="api-reference.html">API Reference</a> &mdash; JavaScript API and type definitions</li>
+    </ul>
+
+    <div class="page-nav">
+      <a class="prev" href="#"></a>
+      <a class="next" href="attributes.html">The 8 Attributes &rarr;</a>
+    </div>
+  </main>
+  <script src="nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+{
+  "name": "pulse-vscode",
+  "displayName": "Pulse.js IntelliSense",
+  "description": "Completions, hover, diagnostics, and syntax highlighting for Pulse.js HTML attributes",
+  "version": "0.1.0",
+  "publisher": "pulse-js",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Programming Languages", "Snippets"],
+  "activationEvents": [
+    "onLanguage:html",
+    "onLanguage:htm",
+    "onLanguage:php",
+    "onLanguage:blade",
+    "onLanguage:ejs",
+    "onLanguage:erb",
+    "onLanguage:handlebars",
+    "onLanguage:twig",
+    "onLanguage:gohtml",
+    "onLanguage:go-template"
+  ],
+  "icon": "pulsejs.png",
+  "main": "./out/extension.js",
+  "contributes": {
+    "grammars": [
+      {
+        "scopeName": "pulse.injection",
+        "path": "./syntaxes/pulse.tmLanguage.json",
+        "injectTo": ["text.html.basic", "text.html.php", "text.html.derivative"]
+      }
+    ],
+    "snippets": [
+      {
+        "language": "html",
+        "path": "./snippets/pulse.json"
+      }
+    ],
+    "configuration": {
+      "title": "Pulse.js",
+      "properties": {
+        "pulse.completions.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Pulse.js attribute completions."
+        },
+        "pulse.hover.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Pulse.js hover documentation."
+        },
+        "pulse.diagnostics.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Pulse.js diagnostics and validation."
+        },
+        "pulse.syntaxHighlighting.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable syntax highlighting for Pulse.js attributes."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "pulse.insertTemplate",
+        "title": "Pulse: Insert Template"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "package": "npx @vscode/vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.20.0",
+    "typescript": "^5.3.0"
+  }
+}
