@@ -166,14 +166,49 @@ pre code {
   font-size: 0.85rem;
 }
 
-/* Syntax highlighting via CSS classes */
-.kw { color: #c792ea; }   /* keywords */
-.str { color: #c3e88d; }  /* strings */
-.attr { color: #ffcb6b; } /* attributes */
-.tag { color: #f07178; }  /* HTML tags */
-.cmt { color: #676e95; }  /* comments */
-.fn { color: #82aaff; }   /* functions */
-.num { color: #f78c6c; }  /* numbers */
+/* ── Prism.js Overrides ── */
+pre[class*="language-"] {
+  background: var(--code-bg);
+  margin-bottom: 1.25rem;
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+}
+
+code[class*="language-"] {
+  font-size: 0.85rem;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+:not(pre) > code[class*="language-"] {
+  background: var(--inline-code-bg);
+  color: var(--text);
+  padding: 0.15em 0.4em;
+}
+
+/* Prism toolbar (copy button) */
+div.code-toolbar > .toolbar {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+  background: var(--accent) !important;
+  color: #fff !important;
+  font-size: 0.75rem !important;
+  padding: 0.25rem 0.6rem !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > button:hover {
+  background: #c33a52 !important;
+}
 
 /* ── Tables ── */
 table {
@@ -250,6 +285,329 @@ tr:nth-child(even) { background: var(--table-stripe); }
 .hero h1 { color: #fff; border-bottom-color: var(--accent); }
 .hero p { color: #c8c8d4; }
 
+/* ── Hero Badges ── */
+.hero-badges {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(233, 69, 96, 0.15);
+  border: 1px solid rgba(233, 69, 96, 0.4);
+  color: #f0c0ca;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  letter-spacing: 0.02em;
+}
+
+/* ── Table of Contents ── */
+.toc {
+  background: #f4f4f8;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  padding: 1rem 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.toc-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.toc ol {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.toc > ol > li {
+  margin-bottom: 0.2rem;
+}
+
+.toc ol ol {
+  padding-left: 1.25rem;
+  margin-top: 0.15rem;
+}
+
+.toc a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.toc a:hover {
+  color: var(--accent);
+}
+
+.toc a.toc-active {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ── Architecture Diagram ── */
+.arch-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 1.5rem 0 2rem;
+}
+
+.arch-layer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.85rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 2px solid;
+  position: relative;
+}
+
+.arch-layer:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 10px solid var(--text-muted);
+  z-index: 1;
+}
+
+.arch-layer:not(:last-child) {
+  margin-bottom: 12px;
+}
+
+.arch-layer.layer-attrs {
+  background: #eef4ff;
+  border-color: #3b82f6;
+  color: #1e40af;
+}
+
+.arch-layer.layer-parsers {
+  background: #f0fdf4;
+  border-color: #22c55e;
+  color: #166534;
+}
+
+.arch-layer.layer-engine {
+  background: #fefce8;
+  border-color: #eab308;
+  color: #854d0e;
+}
+
+.arch-layer.layer-response {
+  background: #fdf2f8;
+  border-color: #ec4899;
+  color: #9d174d;
+}
+
+.arch-layer.layer-dom {
+  background: #f5f3ff;
+  border-color: #8b5cf6;
+  color: #5b21b6;
+}
+
+/* ── Flow Diagram ── */
+.flow-diagram {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin: 1.5rem 0 2rem;
+}
+
+.flow-step {
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-align: center;
+  border: 2px solid;
+  min-width: 220px;
+}
+
+.flow-step.cancelable {
+  background: #fff1f2;
+  border-color: var(--accent);
+  color: #9f1239;
+}
+
+.flow-step.info {
+  background: #eef4ff;
+  border-color: #3b82f6;
+  color: #1e40af;
+}
+
+.flow-step.action {
+  background: #f0fdf4;
+  border-color: #22c55e;
+  color: #166534;
+}
+
+.flow-step.error {
+  background: #fff8ee;
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+.flow-arrow {
+  width: 2px;
+  height: 16px;
+  background: var(--text-muted);
+  position: relative;
+}
+
+.flow-arrow::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--text-muted);
+}
+
+.flow-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin: -2px 0;
+}
+
+.flow-branch {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-top: 0.5rem;
+}
+
+.flow-branch-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+/* ── Syntax Breakdown Diagram ── */
+.syntax-diagram {
+  background: var(--code-bg);
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin: 1.5rem 0 1rem;
+  overflow-x: auto;
+}
+
+.syntax-line {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.95rem;
+  line-height: 2;
+  white-space: nowrap;
+}
+
+.syntax-part {
+  padding: 0.2em 0.1em;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.syntax-part.headers { color: #7ec8e3; }
+.syntax-part.method  { color: #a8e6a1; }
+.syntax-part.url     { color: #f9e07f; }
+.syntax-part.body    { color: #f5a0c0; }
+.syntax-part.target  { color: #c4b5fd; }
+.syntax-part.behavior { color: #67e8f9; }
+.syntax-part.modifiers { color: #fca5a5; }
+
+.syntax-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.syntax-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: #c8c8d4;
+}
+
+.syntax-legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+/* ── Example Cards ── */
+.example-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.example-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem;
+  background: #fff;
+}
+
+.example-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+}
+
+.example-card pre {
+  margin-bottom: 0.75rem;
+}
+
+.example-card p {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.example-card .label {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  margin-bottom: 0.6rem;
+}
+
+.label-basic    { background: #eef4ff; color: #1e40af; }
+.label-forms    { background: #f0fdf4; color: #166534; }
+.label-realtime { background: #fefce8; color: #854d0e; }
+.label-advanced { background: #fdf2f8; color: #9d174d; }
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .sidebar { transform: translateX(-100%); transition: transform 0.25s; }
@@ -257,4 +615,8 @@ tr:nth-child(even) { background: var(--table-stripe); }
   .menu-toggle { display: block; }
   .content { margin-left: 0; padding: 3.5rem 1.25rem 3rem; }
   .compare { grid-template-columns: 1fr; }
+  .example-grid { grid-template-columns: 1fr; }
+  .flow-branch { flex-direction: column; align-items: center; }
+  .syntax-diagram { padding: 1rem; }
+  .hero-badges { justify-content: center; }
 }

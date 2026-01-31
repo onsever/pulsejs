@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Configuration — Pulse.js</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
 </head>
 <body>
   <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
@@ -16,14 +18,12 @@
 
     <h2 id="init">Pulse.init()</h2>
     <p>Call <code>Pulse.init()</code> with a config object to override defaults. Pulse auto-calls <code>init()</code> on <code>DOMContentLoaded</code>, so you only need this for custom settings.</p>
-<pre><code>&lt;script&gt;
-  // Disable auto-init by calling init() before DOMContentLoaded
-  Pulse.init({
-    defaultSwap: 'outer',
-    timeout: 10000,
-    selfRequestsOnly: false
-  });
-&lt;/script&gt;</code></pre>
+<pre><code class="language-javascript">// Disable auto-init by calling init() before DOMContentLoaded
+Pulse.init({
+  defaultSwap: 'outer',
+  timeout: 10000,
+  selfRequestsOnly: false
+});</code></pre>
 
     <h2 id="options">All Options</h2>
     <table>
@@ -50,11 +50,11 @@
 
     <h2 id="meta">Meta Tag Configuration</h2>
     <p>You can also configure Pulse via a <code>&lt;meta&gt;</code> tag in the document head:</p>
-<pre><code>&lt;meta name="pulse-config" content='{"timeout": 5000, "selfRequestsOnly": false}'&gt;</code></pre>
+<pre><code class="language-html">&lt;meta name="pulse-config" content='{"timeout": 5000, "selfRequestsOnly": false}'&gt;</code></pre>
 
     <h2 id="runtime">Runtime Configuration</h2>
     <p>Change configuration after initialization:</p>
-<pre><code>// Update specific options
+<pre><code class="language-javascript">// Update specific options
 Pulse.config({
   timeout: 10000,
   scrollBehavior: 'smooth'
@@ -62,7 +62,7 @@ Pulse.config({
 
     <h2 id="process">Manual Processing</h2>
     <p>If you add HTML to the page dynamically (not via Pulse), you can tell Pulse to scan it:</p>
-<pre><code>// Process a specific subtree
+<pre><code class="language-javascript">// Process a specific subtree
 const newContent = document.getElementById('dynamic-content');
 Pulse.process(newContent);
 
@@ -71,13 +71,13 @@ Pulse.process();</code></pre>
     <div class="note">You don't need to call <code>process()</code> for content swapped by Pulse &mdash; it automatically processes new content after each swap.</div>
 
     <h2 id="security">Security Options</h2>
-    <h3>selfRequestsOnly</h3>
+    <h3 id="security-self">selfRequestsOnly</h3>
     <p>When <code>true</code> (default), Pulse only allows requests to the same origin. This prevents open redirect and SSRF-like attacks from malicious HTML.</p>
 
-    <h3>allowScriptTags</h3>
+    <h3 id="security-scripts">allowScriptTags</h3>
     <p>Controls whether <code>&lt;script&gt;</code> tags in swapped content are executed. Default is <code>true</code>.</p>
 
-    <h3>allowEval</h3>
+    <h3 id="security-eval">allowEval</h3>
     <p>Controls whether <code>p-trigger</code> filters (<code>[ctrlKey]</code>) and <code>p-on</code> handlers can use <code>new Function()</code>. Default is <code>true</code>. Set to <code>false</code> for strict CSP environments.</p>
 
     <div class="page-nav">
@@ -86,5 +86,10 @@ Pulse.process();</code></pre>
     </div>
   </main>
   <script src="nav.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
 </body>
 </html>

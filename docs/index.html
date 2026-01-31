@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pulse.js — Getting Started</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
 </head>
 <body>
   <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
@@ -20,31 +22,45 @@
     <div class="hero">
       <h1>Pulse.js</h1>
       <p>A lightweight, declarative library for building dynamic HTML applications. 8 attributes. One unified syntax.</p>
+      <div class="hero-badges">
+        <span class="hero-badge">8.8 KB gzipped</span>
+        <span class="hero-badge">356 tests</span>
+        <span class="hero-badge">TypeScript strict</span>
+      </div>
     </div>
 
     <h2 id="what">What Is Pulse.js?</h2>
     <p>Pulse.js lets you build dynamic HTML applications with simple declarative attributes &mdash; no JavaScript required. It sends AJAX requests, swaps content into the DOM, and handles events, history, and more, all from your HTML.</p>
     <p>The core innovation is the <code>p-request</code> attribute, which encodes method, URL, headers, body, target, swap behavior, and modifiers into one readable string.</p>
 
-<pre><code>&lt;button p-request="DELETE /item/1 &gt; closest tr.outer :confirm('Sure?')"&gt;
+<pre><code class="language-html">&lt;button p-request="DELETE /item/1 &gt; closest tr.outer :confirm('Sure?')"&gt;
   Delete
 &lt;/button&gt;</code></pre>
+
+    <h2 id="architecture">How It Works</h2>
+    <div class="arch-diagram">
+      <div class="arch-layer layer-attrs">8 HTML Attributes &mdash; p-request, p-trigger, p-on, p-history, p-boost, p-oob, p-ignore, p-inherit</div>
+      <div class="arch-layer layer-parsers">Parsers &mdash; Single-pass recursive descent, O(n), cached</div>
+      <div class="arch-layer layer-engine">Request Engine &mdash; Build request, modifiers, sync, fetch()</div>
+      <div class="arch-layer layer-response">Response Processor &mdash; Headers, OOB, select, scripts, head merge</div>
+      <div class="arch-layer layer-dom">DOM Updates &mdash; 8 swap behaviors, settle, CSS classes, history</div>
+    </div>
 
     <h2 id="install">Installation</h2>
 
     <h3>CDN</h3>
-<pre><code>&lt;script src="https://unpkg.com/@onsever/pulse-js@1.0.0/dist/pulse.min.js"&gt;&lt;/script&gt;</code></pre>
+<pre><code class="language-html">&lt;script src="https://unpkg.com/@onsever/pulse-js@1.0.0/dist/pulse.min.js"&gt;&lt;/script&gt;</code></pre>
 
     <h3>npm</h3>
-<pre><code>npm install @onsever/pulse-js</code></pre>
+<pre><code class="language-bash">npm install @onsever/pulse-js</code></pre>
 
     <h3>ESM Import</h3>
-<pre><code>import '@onsever/pulse-js';</code></pre>
+<pre><code class="language-javascript">import '@onsever/pulse-js';</code></pre>
 
     <p>Pulse auto-initializes on <code>DOMContentLoaded</code>. No setup code needed for basic usage.</p>
 
     <h2 id="first-example">Your First Example</h2>
-<pre><code>&lt;!-- Click the button, GET /hello, replace button contents --&gt;
+<pre><code class="language-html">&lt;!-- Click the button, GET /hello, replace button contents --&gt;
 &lt;button p-request="GET /hello"&gt;
   Click me
 &lt;/button&gt;</code></pre>
@@ -82,5 +98,10 @@
     </div>
   </main>
   <script src="nav.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
 </body>
 </html>

@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>p-request Syntax — Pulse.js</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
 </head>
 <body>
   <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
@@ -15,25 +17,45 @@
     <p>The <code>p-request</code> attribute is the heart of Pulse. It encodes the entire request-response lifecycle in one string.</p>
 
     <h2 id="full-syntax">Full Syntax</h2>
-<pre><code>p-request="{headers} METHOD /url {body} > target.behavior :modifiers"</code></pre>
+
+    <div class="syntax-diagram">
+      <div class="syntax-line">
+        <span class="syntax-part headers">{'X-CSRF': 'tok'}</span>
+        <span class="syntax-part method">POST</span>
+        <span class="syntax-part url">/api/items</span>
+        <span class="syntax-part body">{'name': 'Widget'}</span>
+        <span class="syntax-part target">> #list</span><span class="syntax-part behavior">.append</span>
+        <span class="syntax-part modifiers">:disable :indicator(#spinner)</span>
+      </div>
+      <div class="syntax-legend">
+        <span class="syntax-legend-item"><span class="syntax-legend-swatch" style="background:#7ec8e3"></span> Headers</span>
+        <span class="syntax-legend-item"><span class="syntax-legend-swatch" style="background:#a8e6a1"></span> Method</span>
+        <span class="syntax-legend-item"><span class="syntax-legend-swatch" style="background:#f9e07f"></span> URL</span>
+        <span class="syntax-legend-item"><span class="syntax-legend-swatch" style="background:#f5a0c0"></span> Body</span>
+        <span class="syntax-legend-item"><span class="syntax-legend-swatch" style="background:#c4b5fd"></span> Target</span>
+        <span class="syntax-legend-item"><span class="syntax-legend-swatch" style="background:#67e8f9"></span> Behavior</span>
+        <span class="syntax-legend-item"><span class="syntax-legend-swatch" style="background:#fca5a5"></span> Modifiers</span>
+      </div>
+    </div>
+
     <p>Every part except the URL is optional. The parser reads left-to-right in a single pass.</p>
 
     <h2 id="method">HTTP Method</h2>
     <p>Supported methods: <code>GET</code> (default), <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code>.</p>
-<pre><code>&lt;button p-request="GET /data"&gt;Load&lt;/button&gt;
+<pre><code class="language-html">&lt;button p-request="GET /data"&gt;Load&lt;/button&gt;
 &lt;button p-request="/data"&gt;Also GET (default)&lt;/button&gt;
 &lt;button p-request="POST /items"&gt;Create&lt;/button&gt;
 &lt;button p-request="DELETE /items/5"&gt;Remove&lt;/button&gt;</code></pre>
 
     <h2 id="url">URL</h2>
     <p>The URL is the only required component. It must start with <code>/</code>, <code>.</code>, or a protocol.</p>
-<pre><code>p-request="/api/users"
+<pre><code class="language-html">p-request="/api/users"
 p-request="./relative/path"
 p-request="https://api.example.com/data"</code></pre>
 
     <h2 id="headers">Headers</h2>
     <p>JSON object <strong>before</strong> the method/URL. Sent as additional request headers.</p>
-<pre><code>&lt;!-- Custom headers --&gt;
+<pre><code class="language-html">&lt;!-- Custom headers --&gt;
 &lt;button p-request="{'X-CSRF': 'abc123'} POST /api/data"&gt;Submit&lt;/button&gt;
 
 &lt;!-- Multiple headers --&gt;
@@ -43,24 +65,24 @@ p-request="https://api.example.com/data"</code></pre>
     <h2 id="body">Request Body</h2>
     <p>JSON object <strong>after</strong> the URL. Multiple body formats are supported:</p>
 
-    <h3>JSON Literal</h3>
-<pre><code>&lt;button p-request="POST /api/items {'name': 'Widget', 'price': 9.99}"&gt;Add&lt;/button&gt;</code></pre>
+    <h3 id="body-json">JSON Literal</h3>
+<pre><code class="language-html">&lt;button p-request="POST /api/items {'name': 'Widget', 'price': 9.99}"&gt;Add&lt;/button&gt;</code></pre>
 
-    <h3>Form Selector</h3>
+    <h3 id="body-selector">Form Selector</h3>
     <p>Reference a form element by CSS selector to auto-collect its data.</p>
-<pre><code>&lt;button p-request="POST /submit {#myForm}"&gt;Submit&lt;/button&gt;
+<pre><code class="language-html">&lt;button p-request="POST /submit {#myForm}"&gt;Submit&lt;/button&gt;
 &lt;button p-request="POST /submit {.registration-form}"&gt;Submit&lt;/button&gt;</code></pre>
 
-    <h3><code>{this}</code></h3>
+    <h3 id="body-this"><code>{this}</code></h3>
     <p>Collect form data from the element itself (for forms) or the closest form.</p>
-<pre><code>&lt;form p-request="POST /submit {this}"&gt;
+<pre><code class="language-html">&lt;form p-request="POST /submit {this}"&gt;
   &lt;input name="email" type="email"&gt;
   &lt;button type="submit"&gt;Submit&lt;/button&gt;
 &lt;/form&gt;</code></pre>
 
-    <h3>Field Filters</h3>
+    <h3 id="body-filters">Field Filters</h3>
     <p>Include or exclude specific fields from form data.</p>
-<pre><code>&lt;!-- Only send name and email --&gt;
+<pre><code class="language-html">&lt;!-- Only send name and email --&gt;
 &lt;form p-request="POST /submit {only name, email}"&gt;...&lt;/form&gt;
 
 &lt;!-- Send everything except password --&gt;
@@ -69,22 +91,22 @@ p-request="https://api.example.com/data"</code></pre>
     <h2 id="target">Target</h2>
     <p>The <code>&gt;</code> symbol specifies where the response HTML goes. Default is <code>this</code> (the triggering element).</p>
 
-    <h3>CSS Selector</h3>
-<pre><code>&lt;button p-request="GET /data > #output"&gt;Load&lt;/button&gt;
+    <h3 id="target-css">CSS Selector</h3>
+<pre><code class="language-html">&lt;button p-request="GET /data > #output"&gt;Load&lt;/button&gt;
 &lt;button p-request="GET /data > .results-container"&gt;Load&lt;/button&gt;</code></pre>
 
-    <h3><code>this</code></h3>
-<pre><code>&lt;!-- Replace own content (default) --&gt;
+    <h3 id="target-this"><code>this</code></h3>
+<pre><code class="language-html">&lt;!-- Replace own content (default) --&gt;
 &lt;button p-request="GET /data > this"&gt;Load&lt;/button&gt;</code></pre>
 
-    <h3><code>closest</code></h3>
+    <h3 id="target-closest"><code>closest</code></h3>
     <p>Walks up the DOM tree to find the nearest matching ancestor.</p>
-<pre><code>&lt;button p-request="DELETE /item/1 > closest tr"&gt;Delete Row&lt;/button&gt;
+<pre><code class="language-html">&lt;button p-request="DELETE /item/1 > closest tr"&gt;Delete Row&lt;/button&gt;
 &lt;button p-request="PUT /item/1 > closest .card"&gt;Update Card&lt;/button&gt;</code></pre>
 
-    <h3><code>find</code></h3>
+    <h3 id="target-find"><code>find</code></h3>
     <p>Searches within the triggering element's subtree.</p>
-<pre><code>&lt;div p-request="GET /content > find .body"&gt;
+<pre><code class="language-html">&lt;div p-request="GET /content > find .body"&gt;
   &lt;div class="body"&gt;Content goes here&lt;/div&gt;
 &lt;/div&gt;</code></pre>
 
@@ -105,7 +127,7 @@ p-request="https://api.example.com/data"</code></pre>
       </tbody>
     </table>
 
-<pre><code>&lt;!-- Append to a list --&gt;
+<pre><code class="language-html">&lt;!-- Append to a list --&gt;
 &lt;button p-request="POST /items {this} > #list.append"&gt;Add Item&lt;/button&gt;
 
 &lt;!-- Replace entire element --&gt;
@@ -119,13 +141,13 @@ p-request="https://api.example.com/data"</code></pre>
 
     <h2 id="modifiers">Modifiers</h2>
     <p>Modifiers start with <code>:</code> and appear at the end. They control request behavior, timing, and UI feedback.</p>
-<pre><code>&lt;button p-request="DELETE /item/1 > closest tr.outer :confirm('Delete this?') :disable"&gt;
+<pre><code class="language-html">&lt;button p-request="DELETE /item/1 > closest tr.outer :confirm('Delete this?') :disable"&gt;
   Delete
 &lt;/button&gt;</code></pre>
     <p><a href="modifiers.html">Full modifier reference &rarr;</a></p>
 
     <h2 id="full-examples">Full Examples</h2>
-<pre><code>&lt;!-- Minimal --&gt;
+<pre><code class="language-html">&lt;!-- Minimal --&gt;
 &lt;button p-request="/api/hello"&gt;Hello&lt;/button&gt;
 
 &lt;!-- All components --&gt;
@@ -148,5 +170,10 @@ p-request="https://api.example.com/data"</code></pre>
     </div>
   </main>
   <script src="nav.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
 </body>
 </html>

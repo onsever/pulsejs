@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Events &amp; Lifecycle — Pulse.js</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
 </head>
 <body>
   <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
@@ -15,37 +17,34 @@
     <p>Pulse emits custom events at each stage of the request-response lifecycle. You can listen to these events to add custom behavior.</p>
 
     <h2 id="lifecycle">Lifecycle Flow</h2>
-<pre><code>Trigger fires
-  |
-  v
-pulse:before          &lt;-- cancelable
-  |
-  v
-pulse:beforeSend      &lt;-- cancelable (request built)
-  |
-  v
-  fetch()
-  |
-  v
-pulse:beforeSwap      &lt;-- cancelable (response received)
-  |
-  v
-  DOM swap
-  |
-  v
-pulse:afterSwap       &lt;-- informational
-  |
-  v
-  Settle (CSS classes)
-  |
-  v
-pulse:afterSettle     &lt;-- informational
-  |
-  v
-  Done
 
-On error:
-pulse:error           &lt;-- informational</code></pre>
+    <div class="flow-diagram">
+      <div class="flow-step action">Trigger fires</div>
+      <div class="flow-arrow"></div>
+      <div class="flow-step cancelable">pulse:before</div>
+      <div class="flow-label">cancelable</div>
+      <div class="flow-arrow"></div>
+      <div class="flow-step cancelable">pulse:beforeSend</div>
+      <div class="flow-label">cancelable &mdash; request built</div>
+      <div class="flow-arrow"></div>
+      <div class="flow-step action">fetch()</div>
+      <div class="flow-arrow"></div>
+      <div class="flow-step cancelable">pulse:beforeSwap</div>
+      <div class="flow-label">cancelable &mdash; response received</div>
+      <div class="flow-arrow"></div>
+      <div class="flow-step action">DOM swap</div>
+      <div class="flow-arrow"></div>
+      <div class="flow-step info">pulse:afterSwap</div>
+      <div class="flow-arrow"></div>
+      <div class="flow-step action">Settle (CSS classes)</div>
+      <div class="flow-arrow"></div>
+      <div class="flow-step info">pulse:afterSettle</div>
+    </div>
+
+    <div class="flow-diagram" style="margin-top:0">
+      <div class="flow-branch-label">On error:</div>
+      <div class="flow-step error">pulse:error</div>
+    </div>
 
     <h2 id="events">All Events</h2>
     <table>
@@ -98,7 +97,7 @@ pulse:error           &lt;-- informational</code></pre>
 
     <h2 id="listening-js">Listening via JavaScript</h2>
     <p>Events bubble up the DOM. You can listen on any ancestor, including <code>document</code>.</p>
-<pre><code>// Listen for all Pulse requests
+<pre><code class="language-javascript">// Listen for all Pulse requests
 document.addEventListener('pulse:before', (e) => {
   console.log('Request starting:', e.detail.request.parsed.url);
 });
@@ -125,11 +124,11 @@ form.addEventListener('pulse:afterSwap', (e) => {
     <h2 id="p-on">The p-on Attribute</h2>
     <p>Attach event handlers directly in HTML with <code>p-on</code>.</p>
 
-    <h3>Syntax</h3>
-<pre><code>p-on="eventName: expression | eventName: expression"</code></pre>
+    <h3 id="p-on-syntax">Syntax</h3>
+<pre><code class="language-html">p-on="eventName: expression | eventName: expression"</code></pre>
 
-    <h3>Examples</h3>
-<pre><code>&lt;!-- Reset form after successful swap --&gt;
+    <h3 id="p-on-examples">Examples</h3>
+<pre><code class="language-html">&lt;!-- Reset form after successful swap --&gt;
 &lt;form p-request="POST /submit {this} > #result"
       p-on="pulse:afterSwap: this.reset()"&gt;
   ...
@@ -157,12 +156,12 @@ form.addEventListener('pulse:afterSwap', (e) => {
 
     <h2 id="server-events">Server-Triggered Events</h2>
     <p>The server can trigger custom events on the client using response headers:</p>
-<pre><code>// Server sends:
+<pre><code class="language-bash">// Server sends:
 P-Trigger: showToast
 
 // Or with data:
 P-Trigger: {"showToast": {"message": "Saved!", "type": "success"}}</code></pre>
-<pre><code>// Client listens:
+<pre><code class="language-javascript">// Client listens:
 document.addEventListener('showToast', (e) => {
   displayToast(e.detail.message, e.detail.type);
 });</code></pre>
@@ -180,5 +179,10 @@ document.addEventListener('showToast', (e) => {
     </div>
   </main>
   <script src="nav.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
 </body>
 </html>

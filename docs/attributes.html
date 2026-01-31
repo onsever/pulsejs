@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The 8 Attributes — Pulse.js</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
 </head>
 <body>
   <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
@@ -30,9 +32,9 @@
 
     <h2 id="p-request">1. p-request</h2>
     <p>The core attribute. Encodes method, URL, headers, body, target, swap behavior, and modifiers into one string.</p>
-<pre><code>p-request="{headers} METHOD /url {body} > target.behavior :modifiers"</code></pre>
+<pre><code class="language-html">p-request="{headers} METHOD /url {body} > target.behavior :modifiers"</code></pre>
     <p><strong>Examples:</strong></p>
-<pre><code>&lt;!-- Simple GET --&gt;
+<pre><code class="language-html">&lt;!-- Simple GET --&gt;
 &lt;button p-request="GET /api/data"&gt;Load&lt;/button&gt;
 
 &lt;!-- POST with body, target, and modifier --&gt;
@@ -44,9 +46,9 @@
 
     <h2 id="p-trigger">2. p-trigger</h2>
     <p>Controls when the request fires. Has smart defaults per element type.</p>
-<pre><code>p-trigger="event modifiers"</code></pre>
+<pre><code class="language-html">p-trigger="event modifiers"</code></pre>
     <p><strong>Defaults:</strong> buttons/links &rarr; <code>click</code>, forms &rarr; <code>submit</code>, inputs &rarr; <code>input</code>, selects &rarr; <code>change</code>.</p>
-<pre><code>&lt;!-- Debounced input --&gt;
+<pre><code class="language-html">&lt;!-- Debounced input --&gt;
 &lt;input p-request="GET /search" p-trigger="input debounce 300ms"&gt;
 
 &lt;!-- Keyboard shortcut --&gt;
@@ -58,8 +60,8 @@
 
     <h2 id="p-on">3. p-on</h2>
     <p>Attach handlers to Pulse lifecycle events directly in HTML.</p>
-<pre><code>p-on="eventName: handler() | eventName: handler()"</code></pre>
-<pre><code>&lt;!-- Log before request --&gt;
+<pre><code class="language-html">p-on="eventName: handler() | eventName: handler()"</code></pre>
+<pre><code class="language-html">&lt;!-- Log before request --&gt;
 &lt;button p-request="GET /data" p-on="pulse:before: console.log('Requesting...')"&gt;Load&lt;/button&gt;
 
 &lt;!-- Multiple handlers --&gt;
@@ -70,7 +72,7 @@
 
     <h2 id="p-history">4. p-history</h2>
     <p>Controls browser history integration.</p>
-<pre><code>&lt;!-- Push URL to history --&gt;
+<pre><code class="language-html">&lt;!-- Push URL to history --&gt;
 &lt;a p-request="GET /page/2 > #content" p-history="push"&gt;Page 2&lt;/a&gt;
 
 &lt;!-- Replace current URL --&gt;
@@ -81,7 +83,7 @@
 
     <h2 id="p-boost">5. p-boost</h2>
     <p>Progressively enhances standard links and forms to use Pulse requests.</p>
-<pre><code>&lt;!-- Boost all links in a nav --&gt;
+<pre><code class="language-html">&lt;!-- Boost all links in a nav --&gt;
 &lt;nav p-boost="true"&gt;
   &lt;a href="/home"&gt;Home&lt;/a&gt;
   &lt;a href="/about"&gt;About&lt;/a&gt;
@@ -96,21 +98,21 @@
 
     <h2 id="p-oob">6. p-oob</h2>
     <p>Marks elements in a server response for out-of-band swaps &mdash; updating parts of the page outside the main target.</p>
-<pre><code>&lt;!-- Server response with OOB --&gt;
+<pre><code class="language-html">&lt;!-- Server response with OOB --&gt;
 &lt;div id="main-content"&gt;Main content here&lt;/div&gt;
 &lt;div id="notification-count" p-oob="true"&gt;3&lt;/div&gt;
 &lt;div id="sidebar" p-oob="outer"&gt;Updated sidebar&lt;/div&gt;</code></pre>
 
     <h2 id="p-ignore">7. p-ignore</h2>
     <p>Prevents Pulse from processing an element and its entire subtree.</p>
-<pre><code>&lt;div p-ignore&gt;
+<pre><code class="language-html">&lt;div p-ignore&gt;
   &lt;!-- Pulse will not process any p-* attributes in here --&gt;
   &lt;button p-request="GET /nope"&gt;This won't work&lt;/button&gt;
 &lt;/div&gt;</code></pre>
 
     <h2 id="p-inherit">8. p-inherit</h2>
     <p>Controls how attributes (especially headers) propagate from parent elements.</p>
-<pre><code>&lt;!-- Parent sets headers for all children --&gt;
+<pre><code class="language-html">&lt;!-- Parent sets headers for all children --&gt;
 &lt;div p-request="{'X-CSRF': 'token123'}"&gt;
   &lt;button p-request="POST /item"&gt;Create&lt;/button&gt;
   &lt;button p-request="DELETE /item/1"&gt;Delete&lt;/button&gt;
@@ -127,5 +129,10 @@
     </div>
   </main>
   <script src="nav.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
 </body>
 </html>

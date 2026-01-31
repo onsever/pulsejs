@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Server Integration — Pulse.js</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
 </head>
 <body>
   <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
@@ -48,15 +50,15 @@
       </tbody>
     </table>
 
-    <h3>P-Trigger Header Format</h3>
+    <h3 id="trigger-format">P-Trigger Header Format</h3>
     <p>The trigger headers accept event names, optionally with detail data:</p>
-<pre><code>P-Trigger: myEvent
+<pre><code class="language-bash">P-Trigger: myEvent
 P-Trigger: itemAdded, notificationUpdate
 P-Trigger: {"itemAdded": {"id": 5}, "showMessage": {"text": "Saved!"}}</code></pre>
 
     <h2 id="oob">Out-of-Band Swaps</h2>
     <p>OOB swaps let you update multiple parts of the page from a single response. Elements in the response with <code>p-oob</code> are extracted and swapped into their matching targets.</p>
-<pre><code>&lt;!-- Client: enable OOB processing --&gt;
+<pre><code class="language-html">&lt;!-- Client: enable OOB processing --&gt;
 &lt;button p-request="POST /add-item {this} > #list.append :oob"&gt;Add&lt;/button&gt;
 
 &lt;!-- Server response: main content + OOB updates --&gt;
@@ -69,7 +71,7 @@ P-Trigger: {"itemAdded": {"id": 5}, "showMessage": {"text": "Saved!"}}</code></p
     <p>OOB elements are matched by their <code>id</code>. The <code>p-oob</code> value sets the swap behavior (<code>true</code> defaults to <code>replace</code>).</p>
 
     <h2 id="express">Express.js Example</h2>
-<pre><code>const express = require('express');
+<pre><code class="language-javascript">const express = require('express');
 const app = express();
 
 // Detect Pulse requests
@@ -121,7 +123,7 @@ app.delete('/items/:id', (req, res) => {
 });</code></pre>
 
     <h2 id="flask">Flask Example</h2>
-<pre><code>from flask import Flask, request, make_response, render_template
+<pre><code class="language-python">from flask import Flask, request, make_response, render_template
 import json
 
 app = Flask(__name__)
@@ -143,7 +145,7 @@ def create_item():
     return resp</code></pre>
 
     <h2 id="rails">Rails Example</h2>
-<pre><code>class ItemsController &lt; ApplicationController
+<pre><code class="language-ruby">class ItemsController &lt; ApplicationController
   def index
     @items = Item.all
     if request.headers["P-Request"] == "true"
@@ -171,5 +173,10 @@ end</code></pre>
     </div>
   </main>
   <script src="nav.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
 </body>
 </html>
