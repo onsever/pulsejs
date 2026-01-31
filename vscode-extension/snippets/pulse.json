@@ -57,6 +57,6 @@
   "Pulse: Template Page": {
     "prefix": "p-page",
     "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n\t<meta charset=\"UTF-8\" />\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n\t<title>${1:Pulse App}</title>\n\t<script src=\"${2:pulse.min.js}\"></script>\n</head>\n<body>\n\t<nav p-boost=\"true\">\n\t\t<a href=\"/\">${3:Home}</a>\n\t</nav>\n\t<main id=\"content\">\n\t\t$0\n\t</main>\n</body>\n</html>",
-    "description": "Full HTML page with Pulse.js setup"
+    "description": "Full HTML page with pulse.html setup"
   }
 }

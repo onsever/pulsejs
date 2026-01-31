@@ -1,4 +1,4 @@
-/* Pulse.js Docs — Sidebar Navigation + TOC + Scroll Spy */
+/* pulse.html Docs — Sidebar Navigation + TOC + Scroll Spy */
 (function () {
   var pages = [
     ['index.html', 'Getting Started'],

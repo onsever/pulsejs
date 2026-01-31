@@ -1,4 +1,4 @@
-# Pulse.js
+# pulse.html
 
 A lightweight, declarative JavaScript library for building dynamic HTML applications. **8 attributes. One unified syntax. ~8.8KB gzipped.**
 
@@ -15,17 +15,17 @@ One attribute encodes the HTTP method, URL, target, swap behavior, and modifiers
 ### CDN
 
 ```html
-<script src="https://unpkg.com/@onsever/pulse-js@1.0.0/dist/pulse.min.js"></script>
+<script src="https://unpkg.com/@onsever/pulse-html@1.0.0/dist/pulse.min.js"></script>
 ```
 
 ### npm
 
 ```bash
-npm install @onsever/pulse-js
+npm install @onsever/pulse-html
 ```
 
 ```js
-import '@onsever/pulse-js';
+import '@onsever/pulse-html';
 ```
 
 Pulse auto-initializes on `DOMContentLoaded`. No setup code needed.
@@ -434,11 +434,11 @@ ES2020+ — All modern browsers (Chrome 80+, Firefox 80+, Safari 14+, Edge 80+).
 
 ## Documentation
 
-Full documentation is available at [https://onsever.github.io/pulsejs/](https://onsever.github.io/pulsejs/)
+Full documentation is available at [https://onsever.github.io/pulse-html/](https://onsever.github.io/pulse-html/)
 
 ## VS Code Extension
 
-Install the [Pulse.js IntelliSense](vscode-extension/) extension for attribute completions, hover docs, diagnostics, syntax highlighting, and snippets.
+Install the [pulse.html IntelliSense](vscode-extension/) extension for attribute completions, hover docs, diagnostics, syntax highlighting, and snippets.
 
 ## License
 

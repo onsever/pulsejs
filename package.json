@@ -1,5 +1,5 @@
 {
-  "name": "@onsever/pulse-js",
+  "name": "@onsever/pulse-html",
   "version": "1.0.0",
   "description": "A lightweight, declarative library for building dynamic HTML applications with 8 attributes",
   "main": "dist/pulse.js",

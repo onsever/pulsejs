@@ -1,6 +1,6 @@
-# Pulse.js IntelliSense for VS Code
+# pulse.html IntelliSense for VS Code
 
-VS Code extension for [Pulse.js](https://github.com/onsever/pulsejs) — a lightweight, declarative library for building dynamic HTML applications with 8 attributes.
+VS Code extension for [pulse.html](https://github.com/onsever/pulse-html) — a lightweight, declarative library for building dynamic HTML applications with 8 attributes.
 
 ## Features
 
@@ -35,7 +35,7 @@ Type any of these prefixes in an HTML file:
 | `p-tabs` | Tab navigation |
 | `p-load-more` | Load more button |
 | `p-nav` | Boosted navigation |
-| `p-page` | Full HTML page with Pulse.js |
+| `p-page` | Full HTML page with pulse.html |
 
 Or use **Cmd+Shift+P → Pulse: Insert Template** to pick from a list.
 

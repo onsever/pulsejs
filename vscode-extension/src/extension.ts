@@ -111,7 +111,7 @@ async function insertTemplate() {
 
   const picked = await vscode.window.showQuickPick(
     templates.map(t => ({ label: t.label, detail: t.detail, _snippet: t.snippet })),
-    { placeHolder: 'Select a Pulse.js template to insert' },
+    { placeHolder: 'Select a pulse.html template to insert' },
   );
 
   if (!picked) return;

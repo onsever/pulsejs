@@ -25,7 +25,7 @@ export class PulseCssClassCompletionProvider implements vscode.CompletionItemPro
       .map(([cls, doc]) => {
         const item = new vscode.CompletionItem(cls, vscode.CompletionItemKind.Value);
         item.documentation = new vscode.MarkdownString(doc);
-        item.detail = 'Pulse.js CSS class';
+        item.detail = 'pulse.html CSS class';
         return item;
       });
   }

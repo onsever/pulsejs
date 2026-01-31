@@ -1,12 +1,12 @@
 {
   "name": "pulse-vscode",
-  "displayName": "Pulse.js IntelliSense",
-  "description": "Completions, hover, diagnostics, and syntax highlighting for Pulse.js HTML attributes",
+  "displayName": "pulse.html IntelliSense",
+  "description": "Completions, hover, diagnostics, and syntax highlighting for pulse.html attributes",
   "version": "0.1.0",
   "publisher": "onsever",
   "repository": {
     "type": "git",
-    "url": "https://github.com/onsever/pulsejs"
+    "url": "https://github.com/onsever/pulse-html"
   },
   "engines": {
     "vscode": "^1.85.0"
@@ -41,27 +41,27 @@
       }
     ],
     "configuration": {
-      "title": "Pulse.js",
+      "title": "pulse.html",
       "properties": {
         "pulse.completions.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Enable Pulse.js attribute completions."
+          "description": "Enable pulse.html attribute completions."
         },
         "pulse.hover.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Enable Pulse.js hover documentation."
+          "description": "Enable pulse.html hover documentation."
         },
         "pulse.diagnostics.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Enable Pulse.js diagnostics and validation."
+          "description": "Enable pulse.html diagnostics and validation."
         },
         "pulse.syntaxHighlighting.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Enable syntax highlighting for Pulse.js attributes."
+          "description": "Enable syntax highlighting for pulse.html attributes."
         }
       }
     },
